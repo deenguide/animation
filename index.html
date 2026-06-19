@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animation Library — CSS Cheatsheet</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d1117">
+<meta name="background-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anim Library">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="shortcut icon" href="favicon.ico">
+
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-glow: rgba(201,168,76,0.4);
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --border: #30363d;
+    --radius: 12px;
+    --success: #3fb950;
+    --error: #f85149;
+    --warning: #d29922;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--gold-dim);
+    border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+  .logo-text span { color: var(--gold); }
+  .badge {
+    background: var(--gold-dim); color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+  }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+  .guide-link {
+    display: flex; align-items: center; gap: 6px;
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .guide-link:hover { border-color: var(--gold); color: var(--gold); }
+  .guide-link svg { width: 14px; height: 14px; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center; padding: 60px 32px 48px;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800; letter-spacing: -1.5px;
+    line-height: 1.15;
+    background: linear-gradient(135deg, #e6edf3 30%, #c9a84c 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p { color: var(--text-muted); font-size: 16px; max-width: 500px; margin: 0 auto; }
+
+  /* ── CATEGORY NAV ── */
+  .cat-nav {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-pill {
+    padding: 6px 14px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg2); color: var(--text-muted);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; text-decoration: none;
+  }
+  .cat-pill:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── MAIN ── */
+  main { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── SECTION ── */
+  .section { margin-top: 56px; }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 38px; height: 38px; border-radius: 9px;
+    background: var(--gold-dim); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+    border: 1px solid rgba(201,168,76,0.25);
+  }
+  .section-title { font-size: 20px; font-weight: 700; }
+  .section-count {
+    margin-left: auto; color: var(--text-muted);
+    font-size: 13px; font-weight: 500;
+  }
+
+  /* ── GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    border-color: rgba(201,168,76,0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  .preview {
+    height: 120px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg3); position: relative;
+    overflow: hidden;
+  }
+  .card-body { padding: 14px 16px 16px; }
+  .anim-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .use-case { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.45; }
+  .copy-btn {
+    width: 100%; padding: 8px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--gold); font-size: 12px; font-weight: 600;
+    border-radius: 7px; cursor: pointer;
+    transition: all 0.18s; letter-spacing: 0.3px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .copy-btn:hover { background: var(--gold-dim); border-color: var(--gold); }
+  .copy-btn.copied { background: rgba(63,185,80,0.1); border-color: var(--success); color: var(--success); }
+  .copy-btn svg { width: 13px; height: 13px; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #238636; color: #fff;
+    padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    z-index: 9999; pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ══════════════════════════════════════════════
+     LOADING ANIMATIONS
+  ══════════════════════════════════════════════ */
+
+  /* 1. Spinner */
+  .anim-spinner {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 3px solid rgba(201,168,76,0.2);
+    border-top-color: var(--gold);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* 2. Bouncing Dots */
+  .bounce-dots { display: flex; gap: 8px; align-items: center; }
+  .bounce-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--gold);
+    animation: bounce-dot 0.7s ease-in-out infinite alternate;
+  }
+  .bounce-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .bounce-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce-dot { from { transform: translateY(0); opacity:1; } to { transform: translateY(-14px); opacity:0.5; } }
+
+  /* 3. Skeleton Shimmer */
+  .skeleton-wrap { width: 80%; display: flex; flex-direction: column; gap: 8px; }
+  .skeleton-line {
+    height: 10px; border-radius: 5px;
+    background: linear-gradient(90deg, var(--bg3) 25%, #2d333b 50%, var(--bg3) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  .skeleton-line:last-child { width: 60%; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  /* 4. Progress Bar Fill */
+  .progress-wrap { width: 80%; }
+  .progress-track {
+    height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .progress-fill {
+    height: 100%; width: 0%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--gold), #f0c96e);
+    animation: fill-bar 2s ease-in-out infinite;
+  }
+  @keyframes fill-bar { 0%{width:0%;opacity:1} 70%{width:100%;opacity:1} 85%{width:100%;opacity:0} 100%{width:0%;opacity:0} }
+
+  /* 5. Circular Progress */
+  .circ-progress { width: 54px; height: 54px; position: relative; }
+  .circ-progress svg { transform: rotate(-90deg); }
+  .circ-track { fill: none; stroke: var(--bg); stroke-width: 4; }
+  .circ-fill {
+    fill: none; stroke: var(--gold); stroke-width: 4;
+    stroke-linecap: round; stroke-dasharray: 138.2;
+    animation: circ-spin 2s ease-in-out infinite;
+  }
+  @keyframes circ-spin { 0%{stroke-dashoffset:138.2;} 60%{stroke-dashoffset:0;} 100%{stroke-dashoffset:-138.2;} }
+
+  /* ══════════════════════════════════════════════
+     FEEDBACK ANIMATIONS
+  ══════════════════════════════════════════════ */
+
+  /* 6. Success Checkmark */
+  .check-wrap { position: relative; width: 50px; height: 50px; }
+  .check-circle {
+    width: 50px; height: 50px; border-radius: 50%;
+    border: 3px solid var(--success);
+    animation: scale-in 0.4s ease forwards;
+  }
+  .check-path {
+    position: absolute; top: 11px; left: 9px;
+    width: 30px; height: 20px;
+    border-left: 3px solid var(--success);
+    border-bottom: 3px solid var(--success);
+    transform: rotate(-45deg) scaleX(0);
+    transform-origin: left center;
+    animation: check-draw 0.35s 0.35s ease forwards;
+  }
+  @keyframes scale-in { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+  @keyframes check-draw { from{transform:rotate(-45deg) scaleX(0)} to{transform:rotate(-45deg) scaleX(1)} }
+
+  /* 7. Error Shake */
+  .error-box {
+    padding: 10px 20px; background: rgba(248,81,73,0.12);
+    border: 2px solid var(--error); border-radius: 8px;
+    color: var(--error); font-size: 13px; font-weight: 600;
+    animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) infinite;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    10%,50%,90%{transform:translateX(-6px)}
+    30%,70%{transform:translateX(6px)}
+  }
+
+  /* 8. Warning Pulse */
+  .warn-badge {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(210,153,34,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; position: relative;
+    animation: warn-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes warn-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(210,153,34,0.5)} 50%{box-shadow:0 0 0 14px rgba(210,153,34,0)} }
+
+  /* 9. Confetti Burst */
+  .confetti-wrap { position: relative; width: 80px; height: 80px; }
+  .confetti-dot {
+    position: absolute; top: 50%; left: 50%;
+    width: 8px; height: 8px; border-radius: 2px;
+    animation: confetti-burst 1.5s ease-out infinite;
+  }
+  .confetti-dot:nth-child(1){background:#c9a84c;animation-delay:0s;--ang:0deg;}
+  .confetti-dot:nth-child(2){background:#3fb950;animation-delay:0.1s;--ang:45deg;}
+  .confetti-dot:nth-child(3){background:#f85149;animation-delay:0.2s;--ang:90deg;}
+  .confetti-dot:nth-child(4){background:#58a6ff;animation-delay:0.3s;--ang:135deg;}
+  .confetti-dot:nth-child(5){background:#c9a84c;animation-delay:0.4s;--ang:180deg;}
+  .confetti-dot:nth-child(6){background:#3fb950;animation-delay:0.5s;--ang:225deg;}
+  .confetti-dot:nth-child(7){background:#f85149;animation-delay:0.6s;--ang:270deg;}
+  .confetti-dot:nth-child(8){background:#58a6ff;animation-delay:0.7s;--ang:315deg;}
+  @keyframes confetti-burst {
+    0%{transform:translate(-50%,-50%) rotate(var(--ang)) translateX(0) scale(1);opacity:1;}
+    100%{transform:translate(-50%,-50%) rotate(var(--ang)) translateX(36px) scale(0);opacity:0;}
+  }
+
+  /* 10. Ripple Click */
+  .ripple-btn {
+    padding: 10px 24px; background: var(--gold-dim);
+    border: 1px solid var(--gold); border-radius: 8px;
+    color: var(--gold); font-size: 13px; font-weight: 600;
+    position: relative; overflow: hidden; cursor: default;
+  }
+  .ripple-ring {
+    position: absolute; top: 50%; left: 50%;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(201,168,76,0.5);
+    transform: translate(-50%,-50%) scale(0);
+    animation: ripple 1.8s ease-out infinite;
+  }
+  @keyframes ripple {
+    0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
+    80%{transform:translate(-50%,-50%) scale(8);opacity:0;}
+    100%{opacity:0;}
+  }
+
+  /* ══════════════════════════════════════════════
+     ENTRANCE ANIMATIONS
+  ══════════════════════════════════════════════ */
+
+  /* 11. Fade In Up */
+  .fade-up-el {
+    padding: 10px 20px; background: var(--gold-dim);
+    border: 1px solid var(--gold); border-radius: 8px;
+    color: var(--gold); font-size: 13px; font-weight: 600;
+    animation: fade-in-up 1.2s ease infinite;
+  }
+  @keyframes fade-in-up { 0%{opacity:0;transform:translateY(20px)} 40%{opacity:1;transform:translateY(0)} 80%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(0)} }
+
+  /* 12. Slide In Left */
+  .slide-el {
+    padding: 10px 20px; background: rgba(88,166,255,0.1);
+    border: 1px solid #58a6ff; border-radius: 8px;
+    color: #58a6ff; font-size: 13px; font-weight: 600;
+    animation: slide-left 1.4s ease infinite;
+  }
+  @keyframes slide-left { 0%{opacity:0;transform:translateX(-40px)} 40%{opacity:1;transform:translateX(0)} 80%{opacity:1;transform:translateX(0)} 100%{opacity:0;} }
+
+  /* 13. Zoom In */
+  .zoom-el {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--gold), #f0c96e);
+    animation: zoom-in 1.4s ease infinite;
+  }
+  @keyframes zoom-in { 0%{opacity:0;transform:scale(0.3)} 45%{opacity:1;transform:scale(1)} 80%{opacity:1;transform:scale(1)} 100%{opacity:0;} }
+
+  /* 14. Flip In X */
+  .flip-el {
+    padding: 10px 20px; background: rgba(63,185,80,0.1);
+    border: 1px solid var(--success); border-radius: 8px;
+    color: var(--success); font-size: 13px; font-weight: 600;
+    animation: flip-x 1.6s ease infinite; backface-visibility: visible;
+  }
+  @keyframes flip-x { 0%{opacity:0;transform:perspective(400px) rotateX(90deg)} 45%{opacity:1;transform:perspective(400px) rotateX(0)} 80%{opacity:1;} 100%{opacity:0;} }
+
+  /* 15. Blur to Clear */
+  .blur-el {
+    padding: 10px 20px; background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.3); border-radius: 8px;
+    color: var(--gold); font-size: 13px; font-weight: 600;
+    animation: blur-clear 1.6s ease infinite;
+  }
+  @keyframes blur-clear { 0%{opacity:0;filter:blur(12px)} 45%{opacity:1;filter:blur(0)} 80%{opacity:1;filter:blur(0)} 100%{opacity:0;filter:blur(4px)} }
+
+  /* ══════════════════════════════════════════════
+     HOVER EFFECTS (always-on demo loops)
+  ══════════════════════════════════════════════ */
+
+  /* 16. Scale Grow */
+  .scale-el {
+    padding: 10px 22px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 13px; font-weight: 600;
+    animation: scale-grow 2s ease-in-out infinite;
+  }
+  @keyframes scale-grow { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+
+  /* 17. Glow Border */
+  .glow-el {
+    padding: 10px 22px; background: var(--bg);
+    border: 2px solid var(--gold); border-radius: 8px;
+    color: var(--gold); font-size: 13px; font-weight: 600;
+    animation: glow-border 2s ease-in-out infinite;
+  }
+  @keyframes glow-border { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0)} 50%{box-shadow:0 0 16px 4px rgba(201,168,76,0.4)} }
+
+  /* 18. Underline Draw */
+  .underline-el {
+    font-size: 16px; font-weight: 700; color: var(--text);
+    padding-bottom: 4px; position: relative; display: inline-block;
+  }
+  .underline-el::after {
+    content:''; position: absolute; bottom: 0; left: 0;
+    width: 0%; height: 2px; background: var(--gold);
+    animation: underline-draw 2s ease-in-out infinite;
+  }
+  @keyframes underline-draw { 0%,100%{width:0%} 40%,70%{width:100%} }
+
+  /* 19. Color Sweep */
+  .sweep-el {
+    padding: 10px 22px; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    position: relative; overflow: hidden; cursor: default;
+    border: 1px solid var(--border); color: var(--text);
+    animation: color-sweep 2.5s ease-in-out infinite;
+    background: var(--bg3);
+  }
+  @keyframes color-sweep {
+    0%,100%{background:var(--bg3);color:var(--text);}
+    40%,65%{background:var(--gold);color:#0d1117;}
+  }
+
+  /* 20. 3D Tilt */
+  .tilt-el {
+    width: 54px; height: 54px; border-radius: 10px;
+    background: linear-gradient(135deg, #58a6ff 0%, #c9a84c 100%);
+    animation: tilt-3d 3s ease-in-out infinite;
+  }
+  @keyframes tilt-3d {
+    0%,100%{transform:perspective(300px) rotateY(0deg) rotateX(0deg);}
+    25%{transform:perspective(300px) rotateY(20deg) rotateX(-10deg);}
+    50%{transform:perspective(300px) rotateY(-20deg) rotateX(10deg);}
+    75%{transform:perspective(300px) rotateY(20deg) rotateX(10deg);}
+  }
+
+  /* ══════════════════════════════════════════════
+     TEXT ANIMATIONS
+  ══════════════════════════════════════════════ */
+
+  /* 21. Typewriter Cursor */
+  .type-wrap { display: flex; align-items: center; gap: 2px; }
+  .type-text {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    overflow: hidden; white-space: nowrap;
+    border-right: none;
+    animation: typing 2.5s steps(14) infinite;
+    width: 0;
+  }
+  .type-cursor {
+    width: 2px; height: 18px; background: var(--gold);
+    animation: cursor-blink 0.7s step-end infinite;
+  }
+  @keyframes typing { 0%{width:0} 50%{width:8.5em} 75%{width:8.5em} 85%{width:0} 100%{width:0} }
+  @keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* 22. Gradient Flow Text */
+  .grad-text {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #c9a84c, #f0c96e, #58a6ff, #3fb950, #c9a84c);
+    background-size: 300% 100%;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: grad-flow 3s linear infinite;
+  }
+  @keyframes grad-flow { from{background-position:0% 50%} to{background-position:300% 50%} }
+
+  /* 23. Letter Bounce */
+  .letter-bounce { display: flex; gap: 1px; }
+  .letter-bounce span {
+    font-size: 18px; font-weight: 700; color: var(--gold);
+    display: inline-block;
+    animation: letter-up 1.2s ease-in-out infinite;
+  }
+  .letter-bounce span:nth-child(1){animation-delay:0s}
+  .letter-bounce span:nth-child(2){animation-delay:0.08s}
+  .letter-bounce span:nth-child(3){animation-delay:0.16s}
+  .letter-bounce span:nth-child(4){animation-delay:0.24s}
+  .letter-bounce span:nth-child(5){animation-delay:0.32s}
+  .letter-bounce span:nth-child(6){animation-delay:0.4s}
+  .letter-bounce span:nth-child(7){animation-delay:0.48s}
+  @keyframes letter-up { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-10px)} }
+
+  /* 24. Blur Reveal */
+  .blur-reveal {
+    font-size: 15px; font-weight: 700; color: var(--text);
+    animation: blur-reveal 3s ease-in-out infinite;
+  }
+  @keyframes blur-reveal { 0%,100%{filter:blur(8px);opacity:0.3} 40%,70%{filter:blur(0);opacity:1} }
+
+  /* 25. Wave Letters */
+  .wave-letters { display: flex; gap: 0px; }
+  .wave-letters span {
+    font-size: 18px; font-weight: 700; color: var(--gold);
+    display: inline-block;
+    animation: wave-letter 1.5s ease-in-out infinite;
+  }
+  .wave-letters span:nth-child(1){animation-delay:0s}
+  .wave-letters span:nth-child(2){animation-delay:0.1s}
+  .wave-letters span:nth-child(3){animation-delay:0.2s}
+  .wave-letters span:nth-child(4){animation-delay:0.3s}
+  .wave-letters span:nth-child(5){animation-delay:0.4s}
+  .wave-letters span:nth-child(6){animation-delay:0.5s}
+  .wave-letters span:nth-child(7){animation-delay:0.6s}
+  .wave-letters span:nth-child(8){animation-delay:0.7s}
+  @keyframes wave-letter {
+    0%,100%{transform:translateY(0) rotate(0deg);}
+    25%{transform:translateY(-8px) rotate(-3deg);}
+    75%{transform:translateY(4px) rotate(3deg);}
+  }
+
+  /* ══════════════════════════════════════════════
+     DECORATIVE ANIMATIONS
+  ══════════════════════════════════════════════ */
+
+  /* 26. Floating Orb */
+  .float-orb {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f0c96e, var(--gold), #8b6200);
+    box-shadow: 0 0 20px rgba(201,168,76,0.5);
+    animation: float-orb 3s ease-in-out infinite;
+  }
+  @keyframes float-orb {
+    0%,100%{transform:translateY(0) scale(1);}
+    50%{transform:translateY(-18px) scale(1.06);}
+  }
+
+  /* 27. Infinite Rotate */
+  .rotate-star {
+    width: 44px; height: 44px;
+    background: var(--gold);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: inf-rotate 3s linear infinite;
+  }
+  @keyframes inf-rotate { to{transform:rotate(360deg);} }
+
+  /* 28. Morphing Blob */
+  .morph-blob {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, var(--gold), #58a6ff);
+    animation: morph 6s ease-in-out infinite;
+  }
+  @keyframes morph {
+    0%,100%{border-radius:40% 60% 70% 30% / 40% 50% 60% 50%}
+    25%{border-radius:70% 30% 50% 50% / 30% 60% 40% 70%}
+    50%{border-radius:50% 50% 30% 70% / 60% 40% 70% 30%}
+    75%{border-radius:30% 70% 60% 40% / 50% 30% 50% 60%}
+  }
+
+  /* 29. Wave Bar */
+  .wave-bars { display: flex; gap: 4px; align-items: flex-end; height: 44px; }
+  .wave-bars span {
+    width: 7px; border-radius: 3px 3px 0 0;
+    background: var(--gold); opacity: 0.9;
+    animation: wave-bar 1.2s ease-in-out infinite;
+  }
+  .wave-bars span:nth-child(1){animation-delay:0s; height:10px;}
+  .wave-bars span:nth-child(2){animation-delay:0.15s; height:20px;}
+  .wave-bars span:nth-child(3){animation-delay:0.3s; height:36px;}
+  .wave-bars span:nth-child(4){animation-delay:0.45s; height:28px;}
+  .wave-bars span:nth-child(5){animation-delay:0.6s; height:16px;}
+  .wave-bars span:nth-child(6){animation-delay:0.75s; height:32px;}
+  .wave-bars span:nth-child(7){animation-delay:0.9s; height:12px;}
+  @keyframes wave-bar {
+    0%,100%{transform:scaleY(0.5);opacity:0.5}
+    50%{transform:scaleY(1.5);opacity:1}
+  }
+
+  /* 30. Heartbeat Line */
+  .hb-wrap { width: 90px; height: 44px; position: relative; overflow: hidden; }
+  .hb-line {
+    position: absolute; top: 0; left: 0; width: 200%;
+    animation: hb-move 2s linear infinite;
+  }
+  @keyframes hb-move { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 40px 24px 0;
+    color: var(--text-muted); font-size: 13px;
+    border-top: 1px solid var(--border); margin-top: 60px;
+  }
+  footer span { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    <div class="logo-text">Animation <span>Library</span></div>
+  </div>
+  <div class="header-actions">
+    <a class="guide-link" href="guide.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Guide পড়ো
+    </a>
+    <div class="badge">30 Animations</div>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>CSS Animation Cheatsheet</h1>
+  <p>30 pure CSS animations, live previews, and one-click copy — no dependencies, works offline.</p>
+</div>
+
+<nav class="cat-nav">
+  <a class="cat-pill" href="#loading">⏳ Loading</a>
+  <a class="cat-pill" href="#feedback">✅ Feedback</a>
+  <a class="cat-pill" href="#entrance">🚀 Entrance</a>
+  <a class="cat-pill" href="#hover">🖱 Hover Effects</a>
+  <a class="cat-pill" href="#text">✍️ Text</a>
+  <a class="cat-pill" href="#decorative">🎨 Decorative</a>
+</nav>
+
+<main>
+
+<!-- ══ LOADING ══ -->
+<section class="section" id="loading">
+  <div class="section-header">
+    <div class="section-icon">⏳</div>
+    <div class="section-title">Loading</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="preview"><div class="anim-spinner"></div></div>
+      <div class="card-body">
+        <div class="anim-name">Spinner</div>
+        <div class="use-case">API requests, form submission, page loading states</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'spinner')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="bounce-dots"><span></span><span></span><span></span></div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Bouncing Dots</div>
+        <div class="use-case">Chat typing indicators, background process running</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'bounce-dots')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="skeleton-wrap">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Skeleton Shimmer</div>
+        <div class="use-case">Content placeholders, lazy loading cards and feeds</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'skeleton')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Progress Bar Fill</div>
+        <div class="use-case">File uploads, onboarding steps, form completion</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'progress-bar')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="circ-progress">
+          <svg viewBox="0 0 50 50" width="54" height="54">
+            <circle class="circ-track" cx="25" cy="25" r="22"/>
+            <circle class="circ-fill" cx="25" cy="25" r="22"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Circular Progress</div>
+        <div class="use-case">Timer countdowns, skill percentages, async task status</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'circular-progress')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ FEEDBACK ══ -->
+<section class="section" id="feedback">
+  <div class="section-header">
+    <div class="section-icon">✅</div>
+    <div class="section-title">Feedback</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="preview">
+        <div class="check-wrap"><div class="check-circle"></div><div class="check-path"></div></div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Success Checkmark</div>
+        <div class="use-case">Form submission success, payment confirmed, task complete</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'success-check')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="error-box">⚠ Invalid input</div></div>
+      <div class="card-body">
+        <div class="anim-name">Error Shake</div>
+        <div class="use-case">Wrong password, validation errors, denied access alerts</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'error-shake')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="warn-badge">⚡</div></div>
+      <div class="card-body">
+        <div class="anim-name">Warning Pulse</div>
+        <div class="use-case">System alerts, low battery, notification badges, live indicators</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'warning-pulse')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="confetti-wrap">
+          <div class="confetti-dot"></div><div class="confetti-dot"></div>
+          <div class="confetti-dot"></div><div class="confetti-dot"></div>
+          <div class="confetti-dot"></div><div class="confetti-dot"></div>
+          <div class="confetti-dot"></div><div class="confetti-dot"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Confetti Burst</div>
+        <div class="use-case">Milestone reached, achievement unlocked, celebration moments</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'confetti')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="ripple-btn">Click me<div class="ripple-ring"></div></div></div>
+      <div class="card-body">
+        <div class="anim-name">Ripple Click</div>
+        <div class="use-case">Button feedback, touch response, Material Design interactions</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'ripple')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ ENTRANCE ══ -->
+<section class="section" id="entrance">
+  <div class="section-header">
+    <div class="section-icon">🚀</div>
+    <div class="section-title">Entrance</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="preview"><div class="fade-up-el">Fade In Up</div></div>
+      <div class="card-body">
+        <div class="anim-name">Fade In Up</div>
+        <div class="use-case">Section reveals on scroll, modal popups, content loading</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'fade-in-up')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="slide-el">Slide In</div></div>
+      <div class="card-body">
+        <div class="anim-name">Slide In Left</div>
+        <div class="use-case">Sidebar menus, drawer panels, toast notifications</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'slide-in-left')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="zoom-el"></div></div>
+      <div class="card-body">
+        <div class="anim-name">Zoom In</div>
+        <div class="use-case">Image lightbox, dialog open, hero card reveals</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'zoom-in')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="flip-el">Flip In</div></div>
+      <div class="card-body">
+        <div class="anim-name">Flip In X</div>
+        <div class="use-case">Card flips, FAQ toggles, price reveals</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'flip-in-x')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="blur-el">Blur to Clear</div></div>
+      <div class="card-body">
+        <div class="anim-name">Blur to Clear</div>
+        <div class="use-case">Page transitions, focus moments, spoiler reveals</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'blur-to-clear')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ HOVER ══ -->
+<section class="section" id="hover">
+  <div class="section-header">
+    <div class="section-icon">🖱</div>
+    <div class="section-title">Hover Effects</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="preview"><div class="scale-el">Hover me</div></div>
+      <div class="card-body">
+        <div class="anim-name">Scale Grow</div>
+        <div class="use-case">Buttons, product cards, thumbnails on hover</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'scale-grow')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="glow-el">Glow Border</div></div>
+      <div class="card-body">
+        <div class="anim-name">Glow Border</div>
+        <div class="use-case">CTA buttons, active card states, selected items</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'glow-border')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="underline-el">Hover link text</div></div>
+      <div class="card-body">
+        <div class="anim-name">Underline Draw</div>
+        <div class="use-case">Navigation links, anchor text, menu items</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'underline-draw')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="sweep-el">Color Sweep</div></div>
+      <div class="card-body">
+        <div class="anim-name">Color Sweep</div>
+        <div class="use-case">Primary buttons, toggle states, CTAs with strong presence</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'color-sweep')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="tilt-el"></div></div>
+      <div class="card-body">
+        <div class="anim-name">3D Tilt</div>
+        <div class="use-case">Portfolio project cards, product showcases, image highlights</div>
+        <button class="copy-btn" onclick="copyCSS(this, '3d-tilt')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ TEXT ══ -->
+<section class="section" id="text">
+  <div class="section-header">
+    <div class="section-icon">✍️</div>
+    <div class="section-title">Text Animation</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="preview">
+        <div class="type-wrap">
+          <div class="type-text">Hello, World!</div>
+          <div class="type-cursor"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Typewriter Cursor</div>
+        <div class="use-case">Hero headlines, terminal UIs, code demo sections</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'typewriter')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="grad-text">GRADIENT</div></div>
+      <div class="card-body">
+        <div class="anim-name">Gradient Flow Text</div>
+        <div class="use-case">Brand taglines, hero text, feature highlights</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'gradient-text')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="letter-bounce">
+          <span>B</span><span>O</span><span>U</span><span>N</span><span>C</span><span>E</span><span>!</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Letter Bounce</div>
+        <div class="use-case">Playful headings, kids apps, game scores, celebration text</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'letter-bounce')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="blur-reveal">Secret Revealed</div></div>
+      <div class="card-body">
+        <div class="anim-name">Blur Reveal</div>
+        <div class="use-case">Loading text, dramatic reveals, spoiler toggles</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'blur-reveal')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="wave-letters">
+          <span>W</span><span>A</span><span>V</span><span>E</span>
+          <span> </span>
+          <span>✦</span><span>✦</span><span>✦</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Wave Letters</div>
+        <div class="use-case">Banners, loading states, music or audio-related UIs</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'wave-letters')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ DECORATIVE ══ -->
+<section class="section" id="decorative">
+  <div class="section-header">
+    <div class="section-icon">🎨</div>
+    <div class="section-title">Decorative</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="preview"><div class="float-orb"></div></div>
+      <div class="card-body">
+        <div class="anim-name">Floating Orb</div>
+        <div class="use-case">Background decoration, hero sections, ambient lighting effects</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'floating-orb')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="rotate-star"></div></div>
+      <div class="card-body">
+        <div class="anim-name">Infinite Rotate</div>
+        <div class="use-case">Settings icons, refresh buttons, logo spinners</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'infinite-rotate')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview"><div class="morph-blob"></div></div>
+      <div class="card-body">
+        <div class="anim-name">Morphing Blob</div>
+        <div class="use-case">Background shapes, profile pictures, abstract art sections</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'morphing-blob')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="wave-bars">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Wave Bar</div>
+        <div class="use-case">Audio visualizers, music players, voice recording UI</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'wave-bar')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="preview">
+        <div class="hb-wrap">
+          <svg class="hb-line" viewBox="0 0 200 44" width="200" height="44" fill="none">
+            <polyline points="0,22 20,22 30,6 40,38 50,10 60,34 70,22 90,22 100,22 120,22 130,6 140,38 150,10 160,34 170,22 190,22 200,22"
+              stroke="#c9a84c" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="anim-name">Heartbeat Line</div>
+        <div class="use-case">Health apps, live dashboards, signal/activity monitors</div>
+        <button class="copy-btn" onclick="copyCSS(this, 'heartbeat')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy CSS
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Animation Library — 30 pure CSS keyframes · No dependencies · <span>Copy & paste ready</span></p>
+</footer>
+
+<div id="toast">✓ CSS copied to clipboard!</div>
+
+<script>
+const CSS_SNIPPETS = {
+
+'spinner': `/* Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(201,168,76,0.2);
+  border-top-color: #c9a84c;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}`,
+
+'bounce-dots': `/* Bouncing Dots */
+.bounce-dots { display: flex; gap: 8px; align-items: center; }
+.bounce-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #c9a84c;
+  animation: bounce-dot 0.7s ease-in-out infinite alternate;
+}
+.bounce-dots span:nth-child(2) { animation-delay: 0.15s; }
+.bounce-dots span:nth-child(3) { animation-delay: 0.30s; }
+@keyframes bounce-dot {
+  from { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(-14px); opacity: 0.5; }
+}`,
+
+'skeleton': `/* Skeleton Shimmer */
+.skeleton-line {
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(
+    90deg,
+    #21262d 25%,
+    #2d333b 50%,
+    #21262d 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}`,
+
+'progress-bar': `/* Progress Bar Fill */
+.progress-track {
+  height: 8px;
+  background: #0d1117;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #c9a84c, #f0c96e);
+  animation: fill-bar 2s ease-in-out infinite;
+}
+@keyframes fill-bar {
+  0%   { width: 0%;   opacity: 1; }
+  70%  { width: 100%; opacity: 1; }
+  85%  { width: 100%; opacity: 0; }
+  100% { width: 0%;   opacity: 0; }
+}`,
+
+'circular-progress': `/* Circular Progress */
+/* SVG: <circle class="circ-fill" cx="25" cy="25" r="22"/> */
+.circ-fill {
+  fill: none;
+  stroke: #c9a84c;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 138.2; /* 2π × r */
+  animation: circ-spin 2s ease-in-out infinite;
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+@keyframes circ-spin {
+  0%   { stroke-dashoffset: 138.2; }
+  60%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -138.2; }
+}`,
+
+'success-check': `/* Success Checkmark Draw */
+.check-circle {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 3px solid #3fb950;
+  animation: scale-in 0.4s ease forwards;
+}
+.check-path {
+  position: absolute; top: 11px; left: 9px;
+  width: 30px; height: 20px;
+  border-left: 3px solid #3fb950;
+  border-bottom: 3px solid #3fb950;
+  transform: rotate(-45deg) scaleX(0);
+  transform-origin: left center;
+  animation: check-draw 0.35s 0.35s ease forwards;
+}
+@keyframes scale-in {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+@keyframes check-draw {
+  from { transform: rotate(-45deg) scaleX(0); }
+  to   { transform: rotate(-45deg) scaleX(1); }
+}`,
+
+'error-shake': `/* Error Shake */
+.error-box {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  10%,50%,90% { transform: translateX(-6px); }
+  30%,70% { transform: translateX(6px); }
+}`,
+
+'warning-pulse': `/* Warning Pulse */
+.warn-badge {
+  animation: warn-pulse 1.4s ease-in-out infinite;
+}
+@keyframes warn-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(210,153,34,0.5); }
+  50%      { box-shadow: 0 0 0 14px rgba(210,153,34,0); }
+}`,
+
+'confetti': `/* Confetti Burst */
+/* Use 8 .confetti-dot elements; set --ang per element */
+.confetti-dot {
+  position: absolute; top: 50%; left: 50%;
+  width: 8px; height: 8px; border-radius: 2px;
+  animation: confetti-burst 1.5s ease-out infinite;
+}
+/* Example nth-child overrides: */
+.confetti-dot:nth-child(1){ background:#c9a84c; --ang:0deg; }
+.confetti-dot:nth-child(2){ background:#3fb950; --ang:45deg; animation-delay:0.1s; }
+/* ... repeat for 8 children, 45deg steps */
+@keyframes confetti-burst {
+  0%   { transform: translate(-50%,-50%) rotate(var(--ang)) translateX(0) scale(1); opacity:1; }
+  100% { transform: translate(-50%,-50%) rotate(var(--ang)) translateX(36px) scale(0); opacity:0; }
+}`,
+
+'ripple': `/* Ripple Click */
+.ripple-btn { position: relative; overflow: hidden; }
+.ripple-ring {
+  position: absolute; top: 50%; left: 50%;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(201,168,76,0.5);
+  transform: translate(-50%,-50%) scale(0);
+  animation: ripple 1.8s ease-out infinite;
+}
+@keyframes ripple {
+  0%  { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+  80% { transform: translate(-50%,-50%) scale(8); opacity: 0; }
+  100%{ opacity: 0; }
+}`,
+
+'fade-in-up': `/* Fade In Up */
+.fade-up {
+  animation: fade-in-up 0.6s ease both;
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}`,
+
+'slide-in-left': `/* Slide In Left */
+.slide-in {
+  animation: slide-left 0.5s ease both;
+}
+@keyframes slide-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}`,
+
+'zoom-in': `/* Zoom In */
+.zoom-in {
+  animation: zoom-in 0.4s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes zoom-in {
+  from { opacity: 0; transform: scale(0.3); }
+  to   { opacity: 1; transform: scale(1); }
+}`,
+
+'flip-in-x': `/* Flip In X */
+.flip-in {
+  animation: flip-x 0.6s ease both;
+}
+@keyframes flip-x {
+  from { opacity: 0; transform: perspective(400px) rotateX(90deg); }
+  to   { opacity: 1; transform: perspective(400px) rotateX(0); }
+}`,
+
+'blur-to-clear': `/* Blur to Clear */
+.blur-clear {
+  animation: blur-clear 0.7s ease both;
+}
+@keyframes blur-clear {
+  from { opacity: 0; filter: blur(12px); }
+  to   { opacity: 1; filter: blur(0); }
+}`,
+
+'scale-grow': `/* Scale Grow (Hover) */
+.btn:hover {
+  animation: scale-grow 0.2s ease forwards;
+}
+@keyframes scale-grow {
+  to { transform: scale(1.1); }
+}
+/* Or simpler: */
+.btn { transition: transform 0.2s ease; }
+.btn:hover { transform: scale(1.1); }`,
+
+'glow-border': `/* Glow Border (Hover) */
+.btn { transition: box-shadow 0.2s ease; }
+.btn:hover {
+  box-shadow: 0 0 16px 4px rgba(201,168,76,0.4);
+}`,
+
+'underline-draw': `/* Underline Draw (Hover) */
+.link { position: relative; }
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0%; height: 2px;
+  background: #c9a84c;
+  transition: width 0.3s ease;
+}
+.link:hover::after { width: 100%; }`,
+
+'color-sweep': `/* Color Sweep (Hover) */
+.btn {
+  position: relative; overflow: hidden;
+  transition: color 0.3s ease;
+}
+.btn::before {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: #c9a84c;
+  transition: left 0.3s ease;
+  z-index: 0;
+}
+.btn:hover { color: #0d1117; }
+.btn:hover::before { left: 0; }
+.btn span { position: relative; z-index: 1; }`,
+
+'3d-tilt': `/* 3D Tilt (Hover — use JS for cursor-tracking) */
+.card {
+  transition: transform 0.3s ease;
+  transform-style: preserve-3d;
+}
+.card:hover {
+  transform: perspective(600px) rotateY(8deg) rotateX(-4deg);
+}`,
+
+'typewriter': `/* Typewriter Cursor */
+.type-text {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: typing 3s steps(20) infinite;
+}
+.cursor {
+  width: 2px; height: 1em;
+  background: #c9a84c;
+  animation: cursor-blink 0.7s step-end infinite;
+}
+@keyframes typing {
+  0%,100% { width: 0; }
+  40%,70%  { width: 12em; }
+}
+@keyframes cursor-blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0; }
+}`,
+
+'gradient-text': `/* Gradient Flow Text */
+.grad-text {
+  background: linear-gradient(
+    90deg, #c9a84c, #f0c96e, #58a6ff, #3fb950, #c9a84c
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: grad-flow 3s linear infinite;
+}
+@keyframes grad-flow {
+  from { background-position: 0% 50%; }
+  to   { background-position: 300% 50%; }
+}`,
+
+'letter-bounce': `/* Letter Bounce */
+/* Wrap each letter in a <span> */
+.letter-bounce span {
+  display: inline-block;
+  animation: letter-up 1.2s ease-in-out infinite;
+}
+.letter-bounce span:nth-child(2) { animation-delay: 0.08s; }
+.letter-bounce span:nth-child(3) { animation-delay: 0.16s; }
+/* ... continue for each letter */
+@keyframes letter-up {
+  0%,100% { transform: translateY(0); }
+  40%      { transform: translateY(-10px); }
+}`,
+
+'blur-reveal': `/* Blur Reveal */
+.blur-reveal {
+  animation: blur-reveal 3s ease-in-out infinite;
+}
+@keyframes blur-reveal {
+  0%,100% { filter: blur(8px); opacity: 0.3; }
+  40%,70%  { filter: blur(0);   opacity: 1;   }
+}`,
+
+'wave-letters': `/* Wave Letters */
+/* Wrap each letter in a <span> */
+.wave-letters span {
+  display: inline-block;
+  animation: wave-letter 1.5s ease-in-out infinite;
+}
+.wave-letters span:nth-child(2) { animation-delay: 0.1s; }
+/* ... increment 0.1s per letter */
+@keyframes wave-letter {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translateY(-8px) rotate(-3deg); }
+  75%      { transform: translateY(4px) rotate(3deg); }
+}`,
+
+'floating-orb': `/* Floating Orb */
+.orb {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f0c96e, #c9a84c);
+  box-shadow: 0 0 20px rgba(201,168,76,0.5);
+  animation: float-orb 3s ease-in-out infinite;
+}
+@keyframes float-orb {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-18px) scale(1.06); }
+}`,
+
+'infinite-rotate': `/* Infinite Rotate */
+.icon {
+  animation: inf-rotate 3s linear infinite;
+}
+@keyframes inf-rotate {
+  to { transform: rotate(360deg); }
+}`,
+
+'morphing-blob': `/* Morphing Blob */
+.blob {
+  animation: morph 6s ease-in-out infinite;
+}
+@keyframes morph {
+  0%,100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+  25%      { border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%; }
+  50%      { border-radius: 50% 50% 30% 70% / 60% 40% 70% 30%; }
+  75%      { border-radius: 30% 70% 60% 40% / 50% 30% 50% 60%; }
+}`,
+
+'wave-bar': `/* Wave Bar */
+/* Use 7 <span> elements */
+.wave-bars { display: flex; gap: 4px; align-items: flex-end; }
+.wave-bars span {
+  width: 7px; border-radius: 3px 3px 0 0;
+  background: #c9a84c;
+  animation: wave-bar 1.2s ease-in-out infinite;
+}
+.wave-bars span:nth-child(1){ height:10px; animation-delay:0s; }
+.wave-bars span:nth-child(2){ height:20px; animation-delay:0.15s; }
+.wave-bars span:nth-child(3){ height:36px; animation-delay:0.3s; }
+/* ... set heights & delays per bar */
+@keyframes wave-bar {
+  0%,100% { transform: scaleY(0.5); opacity: 0.5; }
+  50%      { transform: scaleY(1.5); opacity: 1; }
+}`,
+
+'heartbeat': `/* Heartbeat Line */
+/* Use a scrolling SVG polyline */
+.hb-line {
+  animation: hb-move 2s linear infinite;
+}
+@keyframes hb-move {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+/* SVG polyline points pattern:
+   0,22 20,22 30,6 40,38 50,10 60,34 70,22 90,22
+   (repeat the pattern twice for seamless loop) */`
+
+};
+
+function copyCSS(btn, key) {
+  const code = CSS_SNIPPETS[key];
+  if (!code) return;
+  navigator.clipboard.writeText(code).then(() => {
+    const prev = btn.innerHTML;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = prev;
+      btn.classList.remove('copied');
+    }, 1800);
+    showToast();
+  });
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// Register service worker for offline support / installability
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
+</body>
+</html>

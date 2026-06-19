@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animation Guide — ব্যাখ্যা ও ব্যবহার</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d1117">
+<meta name="background-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anim Guide">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="shortcut icon" href="favicon.ico">
+
+<style>
+  @font-face {
+    font-family: 'Noto Serif Bengali Fallback';
+    src: local('Noto Serif Bengali');
+  }
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.15);
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --border: #30363d;
+    --radius: 12px;
+    --success: #3fb950;
+    --error: #f85149;
+    --warning: #d29922;
+    --blue: #58a6ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif Bengali', 'Noto Serif', serif;
+    min-height: 100vh;
+    padding: 0 0 80px;
+    line-height: 1.7;
+  }
+
+  /* technical terms stay in a clean sans for clarity */
+  .tech {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+  }
+  code, .css-tag {
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--gold-dim);
+    border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text { font-family: 'Segoe UI', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+  .logo-text span { color: var(--gold); }
+  .back-link {
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 13px; font-weight: 600;
+    border: 1px solid var(--border); padding: 6px 14px;
+    border-radius: 20px; transition: all 0.2s;
+  }
+  .back-link:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center; padding: 56px 32px 40px;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+  .hero h1 {
+    font-size: clamp(26px, 4.5vw, 42px);
+    font-weight: 700; letter-spacing: -0.5px;
+    line-height: 1.3;
+    background: linear-gradient(135deg, #e6edf3 30%, #c9a84c 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+  .hero p { color: var(--text-muted); font-size: 16px; max-width: 600px; margin: 0 auto; }
+
+  /* ── CATEGORY NAV ── */
+  .cat-nav {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; padding: 22px 32px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .cat-pill {
+    padding: 6px 14px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg2); color: var(--text-muted);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; text-decoration: none;
+  }
+  .cat-pill:hover { border-color: var(--gold); color: var(--gold); }
+
+  main { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── SECTION ── */
+  .section { margin-top: 56px; }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 10px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .section-icon {
+    width: 38px; height: 38px; border-radius: 9px;
+    background: var(--gold-dim); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+    border: 1px solid rgba(201,168,76,0.25);
+  }
+  .section-title { font-size: 20px; font-weight: 700; }
+  .section-count { margin-left: auto; color: var(--text-muted); font-size: 13px; font-weight: 500; }
+  .section-intro {
+    color: var(--text-muted); font-size: 15px;
+    padding: 14px 0 28px; max-width: 720px;
+  }
+
+  /* ── ENTRY CARD ── */
+  .entry {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .entry:hover { border-color: rgba(201,168,76,0.3); }
+
+  .entry-head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 22px; cursor: pointer;
+    user-select: none;
+  }
+  .entry-num {
+    font-family: 'Segoe UI', sans-serif;
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--bg3); color: var(--gold);
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .entry-name {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px; font-weight: 700; color: var(--text);
+    flex: 1;
+  }
+  .entry-mood {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 12px; color: var(--text-muted);
+    background: var(--bg3); padding: 3px 10px; border-radius: 12px;
+    white-space: nowrap;
+  }
+  .entry-chevron {
+    width: 18px; height: 18px; color: var(--text-muted);
+    transition: transform 0.25s; flex-shrink: 0;
+  }
+  .entry.open .entry-chevron { transform: rotate(180deg); }
+
+  .entry-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .entry.open .entry-body { max-height: 800px; }
+  .entry-body-inner {
+    padding: 0 22px 22px;
+    border-top: 1px solid var(--border);
+    margin-top: 0; padding-top: 18px;
+  }
+
+  .row { margin-bottom: 14px; }
+  .row:last-child { margin-bottom: 0; }
+  .row-label {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 5px; display: flex; align-items: center; gap: 6px;
+  }
+  .row-text { font-size: 15.5px; color: var(--text); }
+  .row-text.muted { color: var(--text-muted); }
+
+  .use-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .use-tag {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 12px; font-weight: 600;
+    background: var(--bg3); color: var(--text-muted);
+    padding: 4px 10px; border-radius: 14px;
+    border: 1px solid var(--border);
+  }
+
+  .css-name {
+    display: inline-block;
+    font-family: 'SF Mono', Consolas, monospace;
+    background: var(--bg); color: var(--blue);
+    padding: 2px 8px; border-radius: 6px;
+    font-size: 13px; border: 1px solid var(--border);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 40px 24px 0;
+    color: var(--text-muted); font-size: 13px;
+    border-top: 1px solid var(--border); margin-top: 60px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  footer span { color: var(--gold); }
+
+  @media (max-width: 560px) {
+    .entry-head { padding: 14px 16px; gap: 10px; }
+    .entry-name { font-size: 14.5px; }
+    .entry-mood { display: none; }
+    .entry-body-inner { padding: 0 16px 18px; padding-top: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📖</div>
+    <div class="logo-text">Animation <span>Guide</span></div>
+  </div>
+  <a class="back-link" href="index.html">← Library তে ফিরে যাও</a>
+</header>
+
+<div class="hero">
+  <h1>৩০টি Animation এর ব্যাখ্যা ও মানে</h1>
+  <p>প্রতিটা animation কোথায় ব্যবহার হয়, কী psychological signal দেয়, এবং কখন কোনটা বেছে নেবে — সব এক জায়গায়।</p>
+</div>
+
+<nav class="cat-nav">
+  <a class="cat-pill" href="#loading">⏳ Loading</a>
+  <a class="cat-pill" href="#feedback">✅ Feedback</a>
+  <a class="cat-pill" href="#entrance">🚀 Entrance</a>
+  <a class="cat-pill" href="#hover">🖱 Hover Effects</a>
+  <a class="cat-pill" href="#text">✍️ Text</a>
+  <a class="cat-pill" href="#decorative">🎨 Decorative</a>
+</nav>
+
+<main>
+
+<!-- ══════════════ LOADING ══════════════ -->
+<section class="section" id="loading">
+  <div class="section-header">
+    <div class="section-icon">⏳</div>
+    <div class="section-title">Loading</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <p class="section-intro">এই category টা user কে বলে — "wait করো, কিছু একটা হচ্ছে পেছনে।" Loading animation না থাকলে user মনে করে app/website hang হয়ে গেছে, তাই এই animation গুলো trust ধরে রাখে।</p>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">01</div>
+      <div class="entry-name">Spinner <span class="css-name">.spinner</span></div>
+      <div class="entry-mood">Patience</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">একটা গোলাকার ring অনবরত ঘুরতে থাকে। <span class="tech">border-top-color</span> আলাদা রঙ দিয়ে rotation এর illusion তৈরি করা হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যখন কোনো task এর সময়কাল অনির্দিষ্ট (unknown duration) — যেমন server response এর জন্য অপেক্ষা।</div>
+        <div class="use-tags">
+          <span class="use-tag">API request</span>
+          <span class="use-tag">Form submit</span>
+          <span class="use-tag">Page load</span>
+          <span class="use-tag">Button loading state</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Spinner বলে "process চলছে, কিন্তু কতদূর গেছে জানি না।" এটা সবচেয়ে neutral, generic loading signal — কোনো progress percentage দেখায় না, শুধু "live" থাকার প্রমাণ দেয়।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">02</div>
+      <div class="entry-name">Bouncing Dots <span class="css-name">.bounce-dots</span></div>
+      <div class="entry-mood">Conversational</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">তিনটা dot পরপর delay দিয়ে উপরে-নিচে bounce করে, একটা wave-এর মত flow তৈরি হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে "জীবন্ত", হালকা এবং playful feeling দরকার — heavy spinner এর তুলনায় কম formal।</div>
+        <div class="use-tags">
+          <span class="use-tag">Chat typing indicator</span>
+          <span class="use-tag">Messenger apps</span>
+          <span class="use-tag">Background sync</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">এই animation "মানুষ" এর মত feel দেয় — যেন কেউ ওপাশে টাইপ করছে। Chat app এ এটা ব্যবহার করলে real-time conversation এর অনুভূতি জোরদার হয়।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">03</div>
+      <div class="entry-name">Skeleton Shimmer <span class="css-name">.skeleton-line</span></div>
+      <div class="entry-mood">Anticipation</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Content এর আকৃতির placeholder bar এর উপর দিয়ে একটা light gradient বাম থেকে ডানে স্লাইড করে যায় (shimmer effect)।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যখন আসল content এর shape আগে থেকেই জানা থাকে — তখন সেই shape এর mock-up দেখিয়ে user কে preview দেওয়া হয়।</div>
+        <div class="use-tags">
+          <span class="use-tag">Social feed loading</span>
+          <span class="use-tag">Card list</span>
+          <span class="use-tag">Lazy-loaded images</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Skeleton screen blank সাদা পেজের চেয়ে অনেক বেশি perceived speed দেয় — user মনে করে content "almost ready", কারণ structure টা already দেখা যাচ্ছে। এটা মূলত একটা psychological trick perceived performance বাড়ানোর জন্য।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">04</div>
+      <div class="entry-name">Progress Bar Fill <span class="css-name">.progress-fill</span></div>
+      <div class="entry-mood">Measured progress</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">একটা track এর ভেতরে রঙিন bar width 0% থেকে 100% পর্যন্ত fill হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যখন task এর duration কম-বেশি জানা থাকে এবং user কে "কত বাকি" সেটা জানানো জরুরি।</div>
+        <div class="use-tags">
+          <span class="use-tag">File upload</span>
+          <span class="use-tag">Onboarding steps</span>
+          <span class="use-tag">Form completion %</span>
+          <span class="use-tag">Download</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Spinner এর তুলনায় progress bar বেশি "honest" — কারণ এটা actual measurable progress দেখায়, শুধু "চলছে" বলে না। User এর anxiety কমে কারণ সে জানে কখন শেষ হবে।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">05</div>
+      <div class="entry-name">Circular Progress <span class="css-name">.circ-fill</span></div>
+      <div class="entry-mood">Compact status</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">SVG circle এর <span class="tech">stroke-dasharray</span> ও <span class="tech">stroke-dashoffset</span> ব্যবহার করে একটা ring আস্তে আস্তে আঁকা হয়, ঠিক যেমন pie chart আঁকা হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">ছোট জায়গায় (icon-size) progress দেখাতে হলে, লিনিয়ার bar এর তুলনায় বেশি compact।</div>
+        <div class="use-tags">
+          <span class="use-tag">Timer / countdown</span>
+          <span class="use-tag">Skill percentage</span>
+          <span class="use-tag">Dashboard widget</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Circular shape এর নিজেই একটা "completion" সিম্বলিজম আছে — পুরো বৃত্ত = 100%। এটা data visualization এর সাথেও সরাসরি যুক্ত, তাই dashboard/analytics এ বেশি fit করে।</div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══════════════ FEEDBACK ══════════════ -->
+<section class="section" id="feedback">
+  <div class="section-header">
+    <div class="section-icon">✅</div>
+    <div class="section-title">Feedback</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <p class="section-intro">এই category user এর একটা action এর response দেয় — সফল হলো, fail হলো, নাকি সতর্ক থাকতে হবে। Feedback animation না থাকলে user বুঝতেই পারে না action টা কাজ করেছে কি না।</p>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">06</div>
+      <div class="entry-name">Success Checkmark Draw <span class="css-name">.check-path</span></div>
+      <div class="entry-mood">Relief / confirmation</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">প্রথমে একটা circle scale করে দেখা যায়, তারপর checkmark টা <span class="tech">scaleX</span> দিয়ে আঁকার মত আস্তে আস্তে আবির্ভূত হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">কোনো critical action সফল হলে, যেখানে confirmation টা স্পষ্টভাবে দেখানো জরুরি।</div>
+        <div class="use-tags">
+          <span class="use-tag">Payment confirmed</span>
+          <span class="use-tag">Form submitted</span>
+          <span class="use-tag">Task complete</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Checkmark "আঁকা হচ্ছে" এই motion টা একটা ritual এর মত কাজ করে — user এর মনে একটা ছোট্ট celebration moment তৈরি করে, শুধু static icon দেখানোর চেয়ে বেশি satisfying।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">07</div>
+      <div class="entry-name">Error Shake <span class="css-name">.error-box</span></div>
+      <div class="entry-mood">Alarm</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Element টা দ্রুত বাম-ডানে কাঁপে (horizontal shake), মানুষ যখন মাথা নেড়ে "না" বলে তার মতো।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে user কে immediately বুঝিয়ে দিতে হবে কিছু ভুল হয়েছে — attention grab করার জন্য।</div>
+        <div class="use-tags">
+          <span class="use-tag">Wrong password</span>
+          <span class="use-tag">Validation error</span>
+          <span class="use-tag">Access denied</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Shake motion universally "না" বোঝায় — এটা মানুষের body language থেকে নেওয়া। তাই কোনো ভাষা না জেনেও user instantly বুঝে যায় কিছু wrong হয়েছে।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">08</div>
+      <div class="entry-name">Warning Pulse <span class="css-name">.warn-badge</span></div>
+      <div class="entry-mood">Caution</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Element এর চারপাশে একটা soft glow ring বারবার বড় হয়ে fade হয়ে যায় — radar-এর মতো বিস্তৃত হওয়া।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে urgent না কিন্তু attention দরকার — error এর মতো aggressive না, কিন্তু ignore করা যাবে না।</div>
+        <div class="use-tags">
+          <span class="use-tag">System alert</span>
+          <span class="use-tag">Low battery</span>
+          <span class="use-tag">Live indicator / notification dot</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Pulse motion biological heartbeat এর মতো — এটা "এই element টা জীবন্ত এবং monitor করা হচ্ছে" এই feeling দেয়। Error shake এর চেয়ে নরম, কিন্তু static icon এর চেয়ে বেশি urgent।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">09</div>
+      <div class="entry-name">Confetti Burst <span class="css-name">.confetti-dot</span></div>
+      <div class="entry-mood">Celebration</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">একটা কেন্দ্রবিন্দু থেকে রঙিন টুকরো (dots) সব দিকে ছড়িয়ে পড়ে এবং scale down করে fade হয়ে যায় — CSS variable <span class="tech">--ang</span> দিয়ে প্রতিটার দিক নির্ধারণ করা হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">বড় কোনো milestone বা achievement এর moment — যেটা একটু বেশি celebrate করার যোগ্য।</div>
+        <div class="use-tags">
+          <span class="use-tag">Achievement unlocked</span>
+          <span class="use-tag">Goal completed</span>
+          <span class="use-tag">Game level up</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Confetti হলো এই list-এর সবচেয়ে "high-emotion" animation — এটা একটা পুরস্কার বিতরণের অনুষ্ঠানের অনুভূতি দেয়। অতিরিক্ত ব্যবহার করলে এর impact কমে যায়, তাই rare, special moment এর জন্য রাখা ভালো।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">10</div>
+      <div class="entry-name">Ripple Click <span class="css-name">.ripple-ring</span></div>
+      <div class="entry-mood">Tactile response</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Click করা জায়গা থেকে একটা circle ক্রমশ বড় হয়ে transparent হয়ে যায় — পানিতে ঢিল মারলে যেমন ঢেউ ছড়ায় তেমন।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Button বা touch element এ যেকোনো click/tap এর তাৎক্ষণিক visual response দিতে।</div>
+        <div class="use-tags">
+          <span class="use-tag">Buttons</span>
+          <span class="use-tag">Touch interfaces</span>
+          <span class="use-tag">Material Design style UI</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Ripple effect screen কে "physical surface" এর মতো feel করায় — যেন button টা সত্যিই touch করা হয়েছে। এটা মূলত tactile (স্পর্শগত) feedback এর digital প্রতিরূপ।</div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══════════════ ENTRANCE ══════════════ -->
+<section class="section" id="entrance">
+  <div class="section-header">
+    <div class="section-icon">🚀</div>
+    <div class="section-title">Entrance</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <p class="section-intro">কোনো element কীভাবে screen এ "প্রবেশ" করছে, তা নির্ধারণ করে এই category। সঠিক entrance animation দিলে user এর চোখ স্বাভাবিকভাবে সেই element এর দিকে যায় এবং সেটা sudden popup এর মতো জোরে লাগে না।</p>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">11</div>
+      <div class="entry-name">Fade In Up <span class="css-name">.fade-up</span></div>
+      <div class="entry-mood">Gentle reveal</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Element টা একটু নিচে invisible অবস্থায় থাকে, তারপর opacity বাড়তে বাড়তে উপরে উঠে আসে।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Scroll করার সময় section reveal, বা page load এ content দেখানোর সবচেয়ে common ও নিরাপদ choice।</div>
+        <div class="use-tags">
+          <span class="use-tag">Scroll reveal</span>
+          <span class="use-tag">Modal popup</span>
+          <span class="use-tag">Content loading</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Upward movement একটা "উঠে আসা" বা "জন্ম নেওয়া" এর অনুভূতি দেয় — natural এবং calm। এই কারণে এটা সবচেয়ে universal entrance, কোনো বিশেষ emotion চাপায় না।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">12</div>
+      <div class="entry-name">Slide In Left <span class="css-name">.slide-in</span></div>
+      <div class="entry-mood">Directional</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Element বাম পাশ থেকে স্ক্রিনে ঢুকে আসে, সাথে opacity 0 থেকে 1 হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে element এর একটা logical "origin direction" আছে — যেমন sidebar বাম দিক থেকেই আসা উচিত।</div>
+        <div class="use-tags">
+          <span class="use-tag">Sidebar menu</span>
+          <span class="use-tag">Drawer panel</span>
+          <span class="use-tag">Toast notification</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Direction টা spatial logic বহন করে — sidebar যদি বাম থেকে আসে, তাহলে user mentally বুঝে নেয় এটা "off-screen এর বাম পাশে" lock হয়ে ছিল। এটা navigation এর mental map তৈরি করতে সাহায্য করে।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">13</div>
+      <div class="entry-name">Zoom In <span class="css-name">.zoom-in</span></div>
+      <div class="entry-mood">Focus / pop</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Element ছোট (scale 0.3) থেকে normal size এ overshoot সহ বড় হয়, একটু "bounce" করে থামে।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে element টা center-stage এ আসছে এবং তার দিকে সরাসরি attention টানতে হবে।</div>
+        <div class="use-tags">
+          <span class="use-tag">Image lightbox</span>
+          <span class="use-tag">Dialog box open</span>
+          <span class="use-tag">Hero card reveal</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Zoom-in এর সাথে স্ক্রিনের গভীরতা (depth) এর অনুভূতি যুক্ত — যেন element দূর থেকে কাছে এসেছে। এটা attention সবচেয়ে জোরালোভাবে কেন্দ্রীভূত করে, তাই critical/important content এর জন্য ভালো।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">14</div>
+      <div class="entry-name">Flip In X <span class="css-name">.flip-in</span></div>
+      <div class="entry-mood">Reveal / surprise</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text"><span class="tech">perspective</span> এবং <span class="tech">rotateX</span> দিয়ে element টা যেন একটা কার্ড উলটে গিয়ে নিজের অন্য পিঠ দেখাচ্ছে এমন illusion তৈরি হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে দুটো state (front/back) এর মধ্যে transition দেখানো হয়, বা একটা "uncover" করার অনুভূতি দরকার।</div>
+        <div class="use-tags">
+          <span class="use-tag">Card flip</span>
+          <span class="use-tag">FAQ toggle</span>
+          <span class="use-tag">Price reveal</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">3D rotation এর কারণে এটা একটা "physical object" এর মতো অনুভূতি দেয় — যেন element টার দুটো দিক আছে। এতে interaction অনেক বেশি tactile এবং playful লাগে।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">15</div>
+      <div class="entry-name">Blur to Clear <span class="css-name">.blur-clear</span></div>
+      <div class="entry-mood">Cinematic focus</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text"><span class="tech">filter: blur()</span> ধীরে ধীরে কমে গিয়ে element টা ঝাপসা থেকে স্পষ্ট হয়ে আসে — camera focus pull এর মতো।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে একটা "cinematic" বা elegant মুহূর্ত দরকার — সাধারণ fade এর চেয়ে বেশি premium।</div>
+        <div class="use-tags">
+          <span class="use-tag">Page transition</span>
+          <span class="use-tag">Focus moment / hero text</span>
+          <span class="use-tag">Spoiler reveal</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Blur to clear আমাদের চোখের natural focusing process নকল করে — যেমন camera lens এর focus সেট হয়। এটা একটা subtle, sophisticated entrance, attention জোরালোভাবে না টেনেও elegant impression দেয়।</div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══════════════ HOVER EFFECTS ══════════════ -->
+<section class="section" id="hover">
+  <div class="section-header">
+    <div class="section-icon">🖱</div>
+    <div class="section-title">Hover Effects</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <p class="section-intro">এই animation গুলো বলে দেয় "এই element টা interactive, এর উপর click করা যায়।" Hover feedback ছাড়া user বুঝতে পারে না কোনটা button আর কোনটা শুধু text/image।</p>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">16</div>
+      <div class="entry-name">Scale Grow <span class="css-name">.scale-grow</span></div>
+      <div class="entry-mood">Invitation</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Cursor hover করলে element হালকা বড় হয়ে যায় (<span class="tech">scale(1.1)</span>), mouse সরে গেলে আবার normal size এ ফিরে আসে।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেকোনো clickable element এ basic, subtle hover feedback দিতে — সবচেয়ে versatile choice।</div>
+        <div class="use-tags">
+          <span class="use-tag">Buttons</span>
+          <span class="use-tag">Product cards</span>
+          <span class="use-tag">Thumbnails</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">বড় হওয়ার motion "এদিকে আসো" এমন একটা ইঙ্গিত দেয় — element user এর দিকে যেন একটু এগিয়ে এসেছে। এটা সবচেয়ে neutral hover, কোনো নির্দিষ্ট emotion ছাড়াই "এটা clickable" সিগন্যাল দেয়।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">17</div>
+      <div class="entry-name">Glow Border <span class="css-name">.glow-border</span></div>
+      <div class="entry-mood">Premium emphasis</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Hover করলে element এর চারপাশে soft <span class="tech">box-shadow</span> glow তৈরি হয়, যেন element টা থেকে আলো বের হচ্ছে।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে element টা বিশেষভাবে highlight করতে হবে — premium বা important button।</div>
+        <div class="use-tags">
+          <span class="use-tag">CTA buttons</span>
+          <span class="use-tag">Active/selected card</span>
+          <span class="use-tag">Featured items</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Glow effect "সোনার মত মূল্যবান" এমন একটা feeling দেয় — gold accent color এর সাথে combine করলে এটা luxury বা premium branding এর সাথে খুব ভালো যায়।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">18</div>
+      <div class="entry-name">Underline Draw <span class="css-name">.link::after</span></div>
+      <div class="entry-mood">Precision</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Text এর নিচে একটা line হঠাৎ না এসে width 0% থেকে 100% animate করে আঁকা হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Text-based link এ — minimal, clean style যেখানে কোনো heavy visual change চাই না।</div>
+        <div class="use-tags">
+          <span class="use-tag">Navigation links</span>
+          <span class="use-tag">Anchor text</span>
+          <span class="use-tag">Menu items</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">এই animation টা minimal এবং typography-focused design এর জন্য perfect — color বা shape change ছাড়াই, শুধু একটা সূক্ষ্ম line দিয়ে interactivity বোঝায়। Editorial বা professional website এ বেশি মানায়।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">19</div>
+      <div class="entry-name">Color Sweep <span class="css-name">.btn::before</span></div>
+      <div class="entry-mood">Bold commitment</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Hover করার সাথে সাথে একটা solid color পর্দার মতো বাম দিক থেকে এসে পুরো button কে ভরে ফেলে এবং text color পরিবর্তন হয়ে যায়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Primary action button — যেটাতে strong visual presence দরকার, hesitation ছাড়া clear call-to-action।</div>
+        <div class="use-tags">
+          <span class="use-tag">Primary buttons</span>
+          <span class="use-tag">Toggle states</span>
+          <span class="use-tag">High-priority CTAs</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Sweep motion এর মধ্যে একটা "নিশ্চিত" বা "decisive" অনুভূতি আছে — পুরো button এর রঙ বদলে যাওয়া user কে confirm করায় যে তার hover টা system recognize করেছে। এটা সবচেয়ে attention-grabbing hover effect।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">20</div>
+      <div class="entry-name">3D Tilt <span class="css-name">.card</span></div>
+      <div class="entry-mood">Depth / dimension</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text"><span class="tech">perspective</span> এবং <span class="tech">rotateX/rotateY</span> দিয়ে card টা cursor অনুযায়ী হালকা 3D angle এ tilt হয়, যেন এটা একটা physical card।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Portfolio বা showcase জাতীয় card এ একটা premium, interactive depth feeling আনতে।</div>
+        <div class="use-tags">
+          <span class="use-tag">Portfolio project cards</span>
+          <span class="use-tag">Product showcase</span>
+          <span class="use-tag">Image highlights</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">3D tilt screen এর flat 2D world কে ভেঙে একটা physical, touchable জিনিসের অনুভূতি দেয়। এটা modern, premium product showcase design এর একটা signature trend।</div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══════════════ TEXT ══════════════ -->
+<section class="section" id="text">
+  <div class="section-header">
+    <div class="section-icon">✍️</div>
+    <div class="section-title">Text Animation</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <p class="section-intro">Text কে animate করলে সেটা শুধু information না, একটা experience হয়ে যায়। মূলত branding, hero section এবং playful moment এ এই category কাজে লাগে।</p>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">21</div>
+      <div class="entry-name">Typewriter Cursor <span class="css-name">.type-text</span></div>
+      <div class="entry-mood">Real-time, live</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Text টা <span class="tech">width</span> animate করে অক্ষর-by-অক্ষর প্রকাশ পায়, পাশে একটা blinking cursor থাকে — পুরনো typewriter এর মতো।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে "এখনই লেখা হচ্ছে" এই বাস্তব-সময়ের (real-time) feel দরকার।</div>
+        <div class="use-tags">
+          <span class="use-tag">Hero headlines</span>
+          <span class="use-tag">Terminal/code UI</span>
+          <span class="use-tag">Demo sections</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Typewriter effect একটা "নিজে নিজে তৈরি হচ্ছে" এই illusion দেয় — এটা tech/coding culture এর সাথে সরাসরি যুক্ত, তাই developer-focused site বা AI/chat product এ স্বাভাবিকভাবে মানিয়ে যায়।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">22</div>
+      <div class="entry-name">Gradient Flow Text <span class="css-name">.grad-text</span></div>
+      <div class="entry-mood">Energetic / dynamic</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">একটা rainbow/multi-color gradient text এর ওপর দিয়ে অনবরত move করে, <span class="tech">background-clip: text</span> দিয়ে color টা text-এর shape এ আবদ্ধ করা হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Brand tagline বা hero headline যেখানে modern, energetic identity দেখাতে চাই।</div>
+        <div class="use-tags">
+          <span class="use-tag">Hero text</span>
+          <span class="use-tag">Brand tagline</span>
+          <span class="use-tag">Feature highlight</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Moving gradient একটা "জীবন্ত, ক্রমাগত পরিবর্তনশীল" brand identity প্রকাশ করে — tech startup, AI product বা creative agency-র জন্য এই style খুব common, কারণ এটা innovation এবং energy বোঝায়।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">23</div>
+      <div class="entry-name">Letter Bounce <span class="css-name">.letter-bounce span</span></div>
+      <div class="entry-mood">Playful / cheerful</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">প্রতিটা অক্ষর আলাদা <span class="tech">span</span> এ রেখে, ক্রমান্বয়ে delay দিয়ে উপরে-নিচে bounce করানো হয় — wave এর মতো একটা চলমান প্রভাব।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে মজার, হালকা এবং বাচ্চা-উপযোগী অনুভূতি দরকার।</div>
+        <div class="use-tags">
+          <span class="use-tag">Playful headings</span>
+          <span class="use-tag">Kids/games apps</span>
+          <span class="use-tag">Score/celebration text</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Letter-by-letter bounce একটা শিশুসুলভ আনন্দ ও excitement প্রকাশ করে — এটা serious/corporate site এ বেমানান, কিন্তু gaming, entertainment, বা kids product এ একদম স্বাভাবিক।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">24</div>
+      <div class="entry-name">Blur Reveal <span class="css-name">.blur-reveal</span></div>
+      <div class="entry-mood">Mysterious / dramatic</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">Text ঝাপসা ও অস্পষ্ট থেকে ধীরে ধীরে স্পষ্ট হয়ে আসে, opacity এবং blur একসাথে animate করা হয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">যেখানে একটা suspense বা dramatic reveal moment চাই।</div>
+        <div class="use-tags">
+          <span class="use-tag">Loading text</span>
+          <span class="use-tag">Dramatic reveals</span>
+          <span class="use-tag">Spoiler/answer toggle</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Blur একটা "অজানা" বা "অস্পষ্ট" অবস্থা represent করে, এবং clear হওয়াটা "প্রকাশিত হওয়া" বোঝায়। এই কারণে এটা quiz answer, mystery content বা secret reveal এর জন্য আদর্শ।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">25</div>
+      <div class="entry-name">Wave Letters <span class="css-name">.wave-letters span</span></div>
+      <div class="entry-mood">Rhythmic / musical</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">প্রতিটা অক্ষর rotate এবং translateY একসাথে করে, যাতে একটা ঢেউ-এর মতো (wave) motion পুরো শব্দ জুড়ে চলতে দেখা যায়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Music, audio বা rhythm-based product এ — সাথে banner বা loading state এও কাজ করে।</div>
+        <div class="use-tags">
+          <span class="use-tag">Banners</span>
+          <span class="use-tag">Loading states</span>
+          <span class="use-tag">Music/audio UIs</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Wave motion এর সাথে rotation যুক্ত হওয়ায় এটা letter-bounce এর চেয়ে বেশি smooth ও musical লাগে — এটা একটা ছন্দ (rhythm) এর অনুভূতি তৈরি করে, যা sound-related context এ ভালো fit করে।</div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══════════════ DECORATIVE ══════════════ -->
+<section class="section" id="decorative">
+  <div class="section-header">
+    <div class="section-icon">🎨</div>
+    <div class="section-title">Decorative</div>
+    <div class="section-count">5 animations</div>
+  </div>
+  <p class="section-intro">এই animation গুলোর কোনো functional message নেই — এগুলো শুধু ambient (পারিপার্শ্বিক) সৌন্দর্য তৈরি করে, পেজ কে "জীবন্ত" এবং dynamic মনে করায়।</p>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">26</div>
+      <div class="entry-name">Floating Orb <span class="css-name">.orb</span></div>
+      <div class="entry-mood">Calm / ambient</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">একটা glowing গোলক ধীরে ধীরে উপরে-নিচে ভাসতে থাকে, সাথে হালকা scale পরিবর্তন হয় — মাধ্যাকর্ষণহীন অবস্থায় ভাসমান কিছুর মতো।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Background decoration হিসেবে, hero section এ ambient lighting/atmosphere তৈরি করতে।</div>
+        <div class="use-tags">
+          <span class="use-tag">Background decoration</span>
+          <span class="use-tag">Hero sections</span>
+          <span class="use-tag">Ambient lighting</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Slow, smooth floating motion মনকে শান্ত করে — এটা কোনো urgency বা action দাবি করে না, শুধু পেজের পেছনে একটা soft, dreamy পরিবেশ তৈরি করে।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">27</div>
+      <div class="entry-name">Infinite Rotate <span class="css-name">.icon</span></div>
+      <div class="entry-mood">Continuous / cyclical</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">একটা shape (star/icon) constant speed-এ পুরো 360° rotate করতে থাকে, কোনো থামা ছাড়া।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Settings/gear icon, refresh button, বা logo এর সাথে একটা continuous motion দিতে।</div>
+        <div class="use-tags">
+          <span class="use-tag">Settings icons</span>
+          <span class="use-tag">Refresh buttons</span>
+          <span class="use-tag">Logo spinners</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Endless rotation "চক্র" বা "প্রক্রিয়া চলমান" এর symbol — এই কারণে settings/gear icon এর সাথে এটা চিরাচরিতভাবে যুক্ত, কারণ gear ঘোরা মানে mechanism কাজ করা।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">28</div>
+      <div class="entry-name">Morphing Blob <span class="css-name">.blob</span></div>
+      <div class="entry-mood">Organic / fluid</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text"><span class="tech">border-radius</span> এর প্রতিটা corner আলাদা আলাদা ভাবে continuously পরিবর্তন হয়ে shape টাকে একটা তরল, জীবন্ত আকার দেয়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Abstract background shape, profile picture frame, বা creative/art-focused section এ।</div>
+        <div class="use-tags">
+          <span class="use-tag">Background shapes</span>
+          <span class="use-tag">Profile picture frames</span>
+          <span class="use-tag">Abstract art sections</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Morphing shape কোনো rigid, mechanical জিনিস না বরং organic, প্রাণবন্ত কিছুর অনুভূতি দেয় — modern creative agency বা design studio এর website এ এই trend খুব common, কারণ এটা সৃজনশীলতা ও flexibility প্রকাশ করে।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">29</div>
+      <div class="entry-name">Wave Bar <span class="css-name">.wave-bars span</span></div>
+      <div class="entry-mood">Active / responsive</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">পাশাপাশি কয়েকটা bar উঁচু-নিচু height এ vertically scale হতে থাকে, ঠিক যেমন music equalizer এ দেখা যায়।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Audio/music-related UI এ, যেখানে sound বা voice activity represent করতে হবে।</div>
+        <div class="use-tags">
+          <span class="use-tag">Audio visualizers</span>
+          <span class="use-tag">Music players</span>
+          <span class="use-tag">Voice recording UI</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Wave bar সরাসরি "শব্দ" বা "audio frequency" এর visual representation — এই pattern এতটাই familiar যে user instantly বুঝে যায় এটা কিছু "শুনছে" বা "বাজছে" বোঝাচ্ছে, কোনো লেখা ছাড়াই।</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="entry" onclick="toggleEntry(this)">
+    <div class="entry-head">
+      <div class="entry-num">30</div>
+      <div class="entry-name">Heartbeat Line <span class="css-name">.hb-line</span></div>
+      <div class="entry-mood">Vital / live status</div>
+      <svg class="entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="entry-body"><div class="entry-body-inner">
+      <div class="row">
+        <div class="row-label">কী করে</div>
+        <div class="row-text">একটা ECG-style zigzag line continuously বাম দিকে scroll করতে থাকে, যেন একটা live monitor চলছে।</div>
+      </div>
+      <div class="row">
+        <div class="row-label">কোথায় ব্যবহার</div>
+        <div class="row-text">Health/fitness app, live dashboard, বা activity/signal monitor এ।</div>
+        <div class="use-tags">
+          <span class="use-tag">Health apps</span>
+          <span class="use-tag">Live dashboards</span>
+          <span class="use-tag">Signal/activity monitors</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">মানে কী বহন করে</div>
+        <div class="row-text muted">Heartbeat pattern সরাসরি "জীবন্ত" এবং "monitor করা হচ্ছে" এই অর্থ বহন করে — medical context থেকে আসা এই visual এতটাই familiar যে এটা যেকোনো "live status" দেখাতে instantly বোঝা যায়, even non-health context এও।</div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Animation Guide — প্রতিটা animation এর behind-the-scenes meaning · <span>Library এর সাথে মিলিয়ে ব্যবহার করো</span></p>
+</footer>
+
+<script>
+function toggleEntry(el) {
+  el.classList.toggle('open');
+}
+
+// Register service worker for offline support / installability
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
