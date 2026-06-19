@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,7 +97,13 @@
     background-clip: text;
     margin-bottom: 12px;
   }
-  .hero p { color: var(--text-muted); font-size: 16px; max-width: 500px; margin: 0 auto; }
+  .hero p { color: var(--text-muted); font-size: 16px; max-width: 500px; margin: 0 auto 10px; }
+  .hero-hint {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold); font-size: 12px; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px; margin-top: 8px;
+  }
 
   /* ── CATEGORY NAV ── */
   .cat-nav {
@@ -163,13 +169,34 @@
     height: 120px; display: flex;
     align-items: center; justify-content: center;
     background: var(--bg3); position: relative;
-    overflow: hidden;
+    overflow: hidden; cursor: pointer;
+    transition: background 0.2s;
   }
+  .preview:hover { background: #272d36; }
+  .preview-tap-hint {
+    position: absolute; bottom: 6px; right: 8px;
+    font-size: 10px; color: var(--text-muted);
+    opacity: 0; transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .preview:hover .preview-tap-hint { opacity: 1; }
+
   .card-body { padding: 14px 16px 16px; }
   .anim-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
   .use-case { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.45; }
+
+  .card-btns { display: flex; gap: 8px; }
+  .info-btn {
+    padding: 8px 10px;
+    background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold); font-size: 13px;
+    border-radius: 7px; cursor: pointer;
+    transition: all 0.18s; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .info-btn:hover { background: rgba(201,168,76,0.28); }
   .copy-btn {
-    width: 100%; padding: 8px;
+    flex: 1; padding: 8px;
     background: transparent; border: 1px solid var(--border);
     color: var(--gold); font-size: 12px; font-weight: 600;
     border-radius: 7px; cursor: pointer;
@@ -191,10 +218,148 @@
   #toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ══════════════════════════════════════════════
+     BENGALI MODAL
+  ══════════════════════════════════════════════ */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 5000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .modal-overlay.open {
+    opacity: 1; pointer-events: all;
+  }
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; }
+  }
+  .modal-sheet {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    width: 100%; max-width: 540px;
+    max-height: 90vh; overflow-y: auto;
+    transform: translateY(60px);
+    transition: transform 0.3s cubic-bezier(.34,1.2,.64,1);
+    padding: 0;
+  }
+  .modal-overlay.open .modal-sheet {
+    transform: translateY(0);
+  }
+  @media (min-width: 600px) {
+    .modal-sheet {
+      border-radius: 20px;
+      transform: scale(0.92) translateY(20px);
+    }
+    .modal-overlay.open .modal-sheet {
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .modal-drag-bar {
+    width: 40px; height: 4px; background: var(--border);
+    border-radius: 2px; margin: 12px auto 0;
+  }
+  @media (min-width: 600px) { .modal-drag-bar { display: none; } }
+
+  .modal-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .modal-anim-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: var(--bg3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .modal-title-wrap { flex: 1; }
+  .modal-en-name {
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+    letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 3px;
+  }
+  .modal-bn-name {
+    font-size: 18px; font-weight: 800; color: var(--text);
+    line-height: 1.2; margin-bottom: 4px;
+  }
+  .modal-category {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--gold-dim); color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+  }
+  .modal-close {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text-muted); border-radius: 8px;
+    width: 32px; height: 32px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; transition: all 0.18s;
+    margin-top: 2px;
+  }
+  .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+  .modal-body { padding: 18px 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+  .modal-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .modal-block-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 7px; display: flex; align-items: center; gap: 6px;
+  }
+  .modal-block-label span { font-size: 14px; }
+  .modal-block-text {
+    font-size: 14px; color: var(--text); line-height: 1.65;
+    font-family: 'Segoe UI', 'Noto Sans Bengali', system-ui, sans-serif;
+  }
+
+  .modal-uses {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .modal-use-tag {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text); padding: 6px 10px;
+    background: var(--bg2); border-radius: 8px;
+    border: 1px solid var(--border);
+    font-family: 'Segoe UI', 'Noto Sans Bengali', system-ui, sans-serif;
+  }
+  .modal-use-tag::before { content: '→'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+  .modal-meaning-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.25);
+    color: #79c0ff; padding: 5px 10px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; margin: 3px 4px 3px 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  .modal-footer-btn {
+    width: 100%; padding: 11px;
+    background: var(--gold-dim); border: 1px solid var(--gold);
+    color: var(--gold); font-size: 13px; font-weight: 700;
+    border-radius: 10px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: 0.3px;
+  }
+  .modal-footer-btn:hover { background: rgba(201,168,76,0.28); }
+  .modal-footer-btn.copied-state { background: rgba(63,185,80,0.1); border-color: var(--success); color: var(--success); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 40px 24px 0;
+    color: var(--text-muted); font-size: 13px;
+    border-top: 1px solid var(--border); margin-top: 60px;
+  }
+  footer span { color: var(--gold); }
+
+  /* ══════════════════════════════════════════════
      LOADING ANIMATIONS
   ══════════════════════════════════════════════ */
-
-  /* 1. Spinner */
   .anim-spinner {
     width: 40px; height: 40px; border-radius: 50%;
     border: 3px solid rgba(201,168,76,0.2);
@@ -203,7 +368,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* 2. Bouncing Dots */
   .bounce-dots { display: flex; gap: 8px; align-items: center; }
   .bounce-dots span {
     width: 10px; height: 10px; border-radius: 50%;
@@ -214,7 +378,6 @@
   .bounce-dots span:nth-child(3) { animation-delay: 0.3s; }
   @keyframes bounce-dot { from { transform: translateY(0); opacity:1; } to { transform: translateY(-14px); opacity:0.5; } }
 
-  /* 3. Skeleton Shimmer */
   .skeleton-wrap { width: 80%; display: flex; flex-direction: column; gap: 8px; }
   .skeleton-line {
     height: 10px; border-radius: 5px;
@@ -225,7 +388,6 @@
   .skeleton-line:last-child { width: 60%; }
   @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
-  /* 4. Progress Bar Fill */
   .progress-wrap { width: 80%; }
   .progress-track {
     height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden;
@@ -238,7 +400,6 @@
   }
   @keyframes fill-bar { 0%{width:0%;opacity:1} 70%{width:100%;opacity:1} 85%{width:100%;opacity:0} 100%{width:0%;opacity:0} }
 
-  /* 5. Circular Progress */
   .circ-progress { width: 54px; height: 54px; position: relative; }
   .circ-progress svg { transform: rotate(-90deg); }
   .circ-track { fill: none; stroke: var(--bg); stroke-width: 4; }
@@ -252,8 +413,6 @@
   /* ══════════════════════════════════════════════
      FEEDBACK ANIMATIONS
   ══════════════════════════════════════════════ */
-
-  /* 6. Success Checkmark */
   .check-wrap { position: relative; width: 50px; height: 50px; }
   .check-circle {
     width: 50px; height: 50px; border-radius: 50%;
@@ -272,7 +431,6 @@
   @keyframes scale-in { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
   @keyframes check-draw { from{transform:rotate(-45deg) scaleX(0)} to{transform:rotate(-45deg) scaleX(1)} }
 
-  /* 7. Error Shake */
   .error-box {
     padding: 10px 20px; background: rgba(248,81,73,0.12);
     border: 2px solid var(--error); border-radius: 8px;
@@ -285,7 +443,6 @@
     30%,70%{transform:translateX(6px)}
   }
 
-  /* 8. Warning Pulse */
   .warn-badge {
     width: 48px; height: 48px; border-radius: 50%;
     background: rgba(210,153,34,0.15);
@@ -295,7 +452,6 @@
   }
   @keyframes warn-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(210,153,34,0.5)} 50%{box-shadow:0 0 0 14px rgba(210,153,34,0)} }
 
-  /* 9. Confetti Burst */
   .confetti-wrap { position: relative; width: 80px; height: 80px; }
   .confetti-dot {
     position: absolute; top: 50%; left: 50%;
@@ -315,7 +471,6 @@
     100%{transform:translate(-50%,-50%) rotate(var(--ang)) translateX(36px) scale(0);opacity:0;}
   }
 
-  /* 10. Ripple Click */
   .ripple-btn {
     padding: 10px 24px; background: var(--gold-dim);
     border: 1px solid var(--gold); border-radius: 8px;
@@ -338,8 +493,6 @@
   /* ══════════════════════════════════════════════
      ENTRANCE ANIMATIONS
   ══════════════════════════════════════════════ */
-
-  /* 11. Fade In Up */
   .fade-up-el {
     padding: 10px 20px; background: var(--gold-dim);
     border: 1px solid var(--gold); border-radius: 8px;
@@ -348,7 +501,6 @@
   }
   @keyframes fade-in-up { 0%{opacity:0;transform:translateY(20px)} 40%{opacity:1;transform:translateY(0)} 80%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(0)} }
 
-  /* 12. Slide In Left */
   .slide-el {
     padding: 10px 20px; background: rgba(88,166,255,0.1);
     border: 1px solid #58a6ff; border-radius: 8px;
@@ -357,7 +509,6 @@
   }
   @keyframes slide-left { 0%{opacity:0;transform:translateX(-40px)} 40%{opacity:1;transform:translateX(0)} 80%{opacity:1;transform:translateX(0)} 100%{opacity:0;} }
 
-  /* 13. Zoom In */
   .zoom-el {
     width: 44px; height: 44px; border-radius: 10px;
     background: linear-gradient(135deg, var(--gold), #f0c96e);
@@ -365,7 +516,6 @@
   }
   @keyframes zoom-in { 0%{opacity:0;transform:scale(0.3)} 45%{opacity:1;transform:scale(1)} 80%{opacity:1;transform:scale(1)} 100%{opacity:0;} }
 
-  /* 14. Flip In X */
   .flip-el {
     padding: 10px 20px; background: rgba(63,185,80,0.1);
     border: 1px solid var(--success); border-radius: 8px;
@@ -374,7 +524,6 @@
   }
   @keyframes flip-x { 0%{opacity:0;transform:perspective(400px) rotateX(90deg)} 45%{opacity:1;transform:perspective(400px) rotateX(0)} 80%{opacity:1;} 100%{opacity:0;} }
 
-  /* 15. Blur to Clear */
   .blur-el {
     padding: 10px 20px; background: rgba(201,168,76,0.08);
     border: 1px solid rgba(201,168,76,0.3); border-radius: 8px;
@@ -384,10 +533,8 @@
   @keyframes blur-clear { 0%{opacity:0;filter:blur(12px)} 45%{opacity:1;filter:blur(0)} 80%{opacity:1;filter:blur(0)} 100%{opacity:0;filter:blur(4px)} }
 
   /* ══════════════════════════════════════════════
-     HOVER EFFECTS (always-on demo loops)
+     HOVER EFFECTS
   ══════════════════════════════════════════════ */
-
-  /* 16. Scale Grow */
   .scale-el {
     padding: 10px 22px; background: var(--bg);
     border: 1px solid var(--border); border-radius: 8px;
@@ -396,7 +543,6 @@
   }
   @keyframes scale-grow { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
 
-  /* 17. Glow Border */
   .glow-el {
     padding: 10px 22px; background: var(--bg);
     border: 2px solid var(--gold); border-radius: 8px;
@@ -405,7 +551,6 @@
   }
   @keyframes glow-border { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0)} 50%{box-shadow:0 0 16px 4px rgba(201,168,76,0.4)} }
 
-  /* 18. Underline Draw */
   .underline-el {
     font-size: 16px; font-weight: 700; color: var(--text);
     padding-bottom: 4px; position: relative; display: inline-block;
@@ -417,7 +562,6 @@
   }
   @keyframes underline-draw { 0%,100%{width:0%} 40%,70%{width:100%} }
 
-  /* 19. Color Sweep */
   .sweep-el {
     padding: 10px 22px; border-radius: 8px;
     font-size: 13px; font-weight: 600;
@@ -431,7 +575,6 @@
     40%,65%{background:var(--gold);color:#0d1117;}
   }
 
-  /* 20. 3D Tilt */
   .tilt-el {
     width: 54px; height: 54px; border-radius: 10px;
     background: linear-gradient(135deg, #58a6ff 0%, #c9a84c 100%);
@@ -447,15 +590,11 @@
   /* ══════════════════════════════════════════════
      TEXT ANIMATIONS
   ══════════════════════════════════════════════ */
-
-  /* 21. Typewriter Cursor */
   .type-wrap { display: flex; align-items: center; gap: 2px; }
   .type-text {
     font-size: 14px; font-weight: 600; color: var(--text);
     overflow: hidden; white-space: nowrap;
-    border-right: none;
-    animation: typing 2.5s steps(14) infinite;
-    width: 0;
+    animation: typing 2.5s steps(14) infinite; width: 0;
   }
   .type-cursor {
     width: 2px; height: 18px; background: var(--gold);
@@ -464,7 +603,6 @@
   @keyframes typing { 0%{width:0} 50%{width:8.5em} 75%{width:8.5em} 85%{width:0} 100%{width:0} }
   @keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  /* 22. Gradient Flow Text */
   .grad-text {
     font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
     background: linear-gradient(90deg, #c9a84c, #f0c96e, #58a6ff, #3fb950, #c9a84c);
@@ -475,7 +613,6 @@
   }
   @keyframes grad-flow { from{background-position:0% 50%} to{background-position:300% 50%} }
 
-  /* 23. Letter Bounce */
   .letter-bounce { display: flex; gap: 1px; }
   .letter-bounce span {
     font-size: 18px; font-weight: 700; color: var(--gold);
@@ -491,14 +628,12 @@
   .letter-bounce span:nth-child(7){animation-delay:0.48s}
   @keyframes letter-up { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-10px)} }
 
-  /* 24. Blur Reveal */
   .blur-reveal {
     font-size: 15px; font-weight: 700; color: var(--text);
-    animation: blur-reveal 3s ease-in-out infinite;
+    animation: blur-reveal-anim 3s ease-in-out infinite;
   }
-  @keyframes blur-reveal { 0%,100%{filter:blur(8px);opacity:0.3} 40%,70%{filter:blur(0);opacity:1} }
+  @keyframes blur-reveal-anim { 0%,100%{filter:blur(8px);opacity:0.3} 40%,70%{filter:blur(0);opacity:1} }
 
-  /* 25. Wave Letters */
   .wave-letters { display: flex; gap: 0px; }
   .wave-letters span {
     font-size: 18px; font-weight: 700; color: var(--gold);
@@ -522,8 +657,6 @@
   /* ══════════════════════════════════════════════
      DECORATIVE ANIMATIONS
   ══════════════════════════════════════════════ */
-
-  /* 26. Floating Orb */
   .float-orb {
     width: 48px; height: 48px; border-radius: 50%;
     background: radial-gradient(circle at 35% 35%, #f0c96e, var(--gold), #8b6200);
@@ -535,7 +668,6 @@
     50%{transform:translateY(-18px) scale(1.06);}
   }
 
-  /* 27. Infinite Rotate */
   .rotate-star {
     width: 44px; height: 44px;
     background: var(--gold);
@@ -544,7 +676,6 @@
   }
   @keyframes inf-rotate { to{transform:rotate(360deg);} }
 
-  /* 28. Morphing Blob */
   .morph-blob {
     width: 60px; height: 60px;
     background: linear-gradient(135deg, var(--gold), #58a6ff);
@@ -557,7 +688,6 @@
     75%{border-radius:30% 70% 60% 40% / 50% 30% 50% 60%}
   }
 
-  /* 29. Wave Bar */
   .wave-bars { display: flex; gap: 4px; align-items: flex-end; height: 44px; }
   .wave-bars span {
     width: 7px; border-radius: 3px 3px 0 0;
@@ -576,24 +706,53 @@
     50%{transform:scaleY(1.5);opacity:1}
   }
 
-  /* 30. Heartbeat Line */
   .hb-wrap { width: 90px; height: 44px; position: relative; overflow: hidden; }
   .hb-line {
     position: absolute; top: 0; left: 0; width: 200%;
     animation: hb-move 2s linear infinite;
   }
   @keyframes hb-move { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
-  /* ── FOOTER ── */
-  footer {
-    text-align: center; padding: 40px 24px 0;
-    color: var(--text-muted); font-size: 13px;
-    border-top: 1px solid var(--border); margin-top: 60px;
-  }
-  footer span { color: var(--gold); }
 </style>
 </head>
 <body>
+
+<!-- ══════════ MODAL ══════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-drag-bar"></div>
+    <div class="modal-header">
+      <div class="modal-anim-icon" id="modalIcon">✦</div>
+      <div class="modal-title-wrap">
+        <div class="modal-en-name" id="modalEnName">Animation Name</div>
+        <div class="modal-bn-name" id="modalBnName">অ্যানিমেশনের নাম</div>
+        <span class="modal-category" id="modalCategory">⏳ Loading</span>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-block">
+        <div class="modal-block-label"><span>📖</span> ব্যাখ্যা</div>
+        <div class="modal-block-text" id="modalExplanation">—</div>
+      </div>
+      <div class="modal-block">
+        <div class="modal-block-label"><span>🛠️</span> কোন কাজে লাগে</div>
+        <div class="modal-uses" id="modalUses"></div>
+      </div>
+      <div class="modal-block">
+        <div class="modal-block-label"><span>💡</span> Visual অর্থ</div>
+        <div class="modal-block-text" id="modalMeaning">—</div>
+        <div style="margin-top:10px" id="modalChips"></div>
+      </div>
+      <button class="modal-footer-btn" id="modalCopyBtn" onclick="modalCopyCSS()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        CSS Code কপি করো
+      </button>
+    </div>
+  </div>
+</div>
+<!-- ══════════ END MODAL ══════════ -->
+
+<div id="toast">✓ CSS copied to clipboard!</div>
 
 <header>
   <div class="logo">
@@ -601,7 +760,7 @@
     <div class="logo-text">Animation <span>Library</span></div>
   </div>
   <div class="header-actions">
-    <a class="guide-link" href="guide.html">
+    <a class="guide-link" href="animation-guide.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       Guide পড়ো
     </a>
@@ -611,7 +770,8 @@
 
 <div class="hero">
   <h1>CSS Animation Cheatsheet</h1>
-  <p>30 pure CSS animations, live previews, and one-click copy — no dependencies, works offline.</p>
+  <p>30 pure CSS animations, live previews, one-click copy — no dependencies, works offline.</p>
+  <div class="hero-hint">👆 যেকোনো animation-এ ট্যাপ করো — বাংলায় ব্যাখ্যা পাবে</div>
 </div>
 
 <nav class="cat-nav">
@@ -635,81 +795,101 @@
   <div class="grid">
 
     <div class="card">
-      <div class="preview"><div class="anim-spinner"></div></div>
+      <div class="preview" onclick="openModal('spinner')">
+        <div class="anim-spinner"></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Spinner</div>
         <div class="use-case">API requests, form submission, page loading states</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'spinner')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('spinner')" title="বাংলায় জানো">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'spinner')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('bounce-dots')">
         <div class="bounce-dots"><span></span><span></span><span></span></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Bouncing Dots</div>
         <div class="use-case">Chat typing indicators, background process running</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'bounce-dots')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('bounce-dots')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'bounce-dots')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('skeleton')">
         <div class="skeleton-wrap">
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Skeleton Shimmer</div>
         <div class="use-case">Content placeholders, lazy loading cards and feeds</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'skeleton')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('skeleton')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'skeleton')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('progress-bar')">
         <div class="progress-wrap">
           <div class="progress-track"><div class="progress-fill"></div></div>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Progress Bar Fill</div>
         <div class="use-case">File uploads, onboarding steps, form completion</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'progress-bar')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('progress-bar')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'progress-bar')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('circular-progress')">
         <div class="circ-progress">
           <svg viewBox="0 0 50 50" width="54" height="54">
             <circle class="circ-track" cx="25" cy="25" r="22"/>
             <circle class="circ-fill" cx="25" cy="25" r="22"/>
           </svg>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Circular Progress</div>
         <div class="use-case">Timer countdowns, skill percentages, async task status</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'circular-progress')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('circular-progress')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'circular-progress')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
@@ -726,71 +906,97 @@
   <div class="grid">
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('success-check')">
         <div class="check-wrap"><div class="check-circle"></div><div class="check-path"></div></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Success Checkmark</div>
         <div class="use-case">Form submission success, payment confirmed, task complete</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'success-check')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('success-check')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'success-check')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="error-box">⚠ Invalid input</div></div>
+      <div class="preview" onclick="openModal('error-shake')">
+        <div class="error-box">⚠ Invalid input</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Error Shake</div>
         <div class="use-case">Wrong password, validation errors, denied access alerts</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'error-shake')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('error-shake')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'error-shake')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="warn-badge">⚡</div></div>
+      <div class="preview" onclick="openModal('warning-pulse')">
+        <div class="warn-badge">⚡</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Warning Pulse</div>
         <div class="use-case">System alerts, low battery, notification badges, live indicators</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'warning-pulse')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('warning-pulse')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'warning-pulse')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('confetti')">
         <div class="confetti-wrap">
           <div class="confetti-dot"></div><div class="confetti-dot"></div>
           <div class="confetti-dot"></div><div class="confetti-dot"></div>
           <div class="confetti-dot"></div><div class="confetti-dot"></div>
           <div class="confetti-dot"></div><div class="confetti-dot"></div>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Confetti Burst</div>
         <div class="use-case">Milestone reached, achievement unlocked, celebration moments</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'confetti')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('confetti')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'confetti')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="ripple-btn">Click me<div class="ripple-ring"></div></div></div>
+      <div class="preview" onclick="openModal('ripple')">
+        <div class="ripple-btn">Click me<div class="ripple-ring"></div></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Ripple Click</div>
         <div class="use-case">Button feedback, touch response, Material Design interactions</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'ripple')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('ripple')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'ripple')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
@@ -807,62 +1013,92 @@
   <div class="grid">
 
     <div class="card">
-      <div class="preview"><div class="fade-up-el">Fade In Up</div></div>
+      <div class="preview" onclick="openModal('fade-in-up')">
+        <div class="fade-up-el">Fade In Up</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Fade In Up</div>
         <div class="use-case">Section reveals on scroll, modal popups, content loading</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'fade-in-up')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('fade-in-up')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'fade-in-up')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="slide-el">Slide In</div></div>
+      <div class="preview" onclick="openModal('slide-in-left')">
+        <div class="slide-el">Slide In</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Slide In Left</div>
         <div class="use-case">Sidebar menus, drawer panels, toast notifications</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'slide-in-left')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('slide-in-left')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'slide-in-left')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="zoom-el"></div></div>
+      <div class="preview" onclick="openModal('zoom-in')">
+        <div class="zoom-el"></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Zoom In</div>
         <div class="use-case">Image lightbox, dialog open, hero card reveals</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'zoom-in')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('zoom-in')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'zoom-in')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="flip-el">Flip In</div></div>
+      <div class="preview" onclick="openModal('flip-in-x')">
+        <div class="flip-el">Flip In</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Flip In X</div>
         <div class="use-case">Card flips, FAQ toggles, price reveals</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'flip-in-x')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('flip-in-x')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'flip-in-x')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="blur-el">Blur to Clear</div></div>
+      <div class="preview" onclick="openModal('blur-to-clear')">
+        <div class="blur-el">Blur to Clear</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Blur to Clear</div>
         <div class="use-case">Page transitions, focus moments, spoiler reveals</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'blur-to-clear')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('blur-to-clear')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'blur-to-clear')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
@@ -879,62 +1115,92 @@
   <div class="grid">
 
     <div class="card">
-      <div class="preview"><div class="scale-el">Hover me</div></div>
+      <div class="preview" onclick="openModal('scale-grow')">
+        <div class="scale-el">Hover me</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Scale Grow</div>
         <div class="use-case">Buttons, product cards, thumbnails on hover</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'scale-grow')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('scale-grow')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'scale-grow')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="glow-el">Glow Border</div></div>
+      <div class="preview" onclick="openModal('glow-border')">
+        <div class="glow-el">Glow Border</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Glow Border</div>
         <div class="use-case">CTA buttons, active card states, selected items</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'glow-border')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('glow-border')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'glow-border')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="underline-el">Hover link text</div></div>
+      <div class="preview" onclick="openModal('underline-draw')">
+        <div class="underline-el">Hover link text</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Underline Draw</div>
         <div class="use-case">Navigation links, anchor text, menu items</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'underline-draw')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('underline-draw')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'underline-draw')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="sweep-el">Color Sweep</div></div>
+      <div class="preview" onclick="openModal('color-sweep')">
+        <div class="sweep-el">Color Sweep</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Color Sweep</div>
         <div class="use-case">Primary buttons, toggle states, CTAs with strong presence</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'color-sweep')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('color-sweep')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'color-sweep')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="tilt-el"></div></div>
+      <div class="preview" onclick="openModal('3d-tilt')">
+        <div class="tilt-el"></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">3D Tilt</div>
         <div class="use-case">Portfolio project cards, product showcases, image highlights</div>
-        <button class="copy-btn" onclick="copyCSS(this, '3d-tilt')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('3d-tilt')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'3d-tilt')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
@@ -951,77 +1217,100 @@
   <div class="grid">
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('typewriter')">
         <div class="type-wrap">
           <div class="type-text">Hello, World!</div>
           <div class="type-cursor"></div>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Typewriter Cursor</div>
         <div class="use-case">Hero headlines, terminal UIs, code demo sections</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'typewriter')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('typewriter')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'typewriter')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="grad-text">GRADIENT</div></div>
+      <div class="preview" onclick="openModal('gradient-text')">
+        <div class="grad-text">GRADIENT</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Gradient Flow Text</div>
         <div class="use-case">Brand taglines, hero text, feature highlights</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'gradient-text')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('gradient-text')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'gradient-text')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('letter-bounce')">
         <div class="letter-bounce">
           <span>B</span><span>O</span><span>U</span><span>N</span><span>C</span><span>E</span><span>!</span>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Letter Bounce</div>
         <div class="use-case">Playful headings, kids apps, game scores, celebration text</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'letter-bounce')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('letter-bounce')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'letter-bounce')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="blur-reveal">Secret Revealed</div></div>
+      <div class="preview" onclick="openModal('blur-reveal')">
+        <div class="blur-reveal">Secret Revealed</div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Blur Reveal</div>
         <div class="use-case">Loading text, dramatic reveals, spoiler toggles</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'blur-reveal')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('blur-reveal')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'blur-reveal')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('wave-letters')">
         <div class="wave-letters">
           <span>W</span><span>A</span><span>V</span><span>E</span>
-          <span> </span>
-          <span>✦</span><span>✦</span><span>✦</span>
+          <span> </span><span>✦</span><span>✦</span><span>✦</span>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Wave Letters</div>
         <div class="use-case">Banners, loading states, music or audio-related UIs</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'wave-letters')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('wave-letters')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'wave-letters')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1038,73 +1327,99 @@
   <div class="grid">
 
     <div class="card">
-      <div class="preview"><div class="float-orb"></div></div>
+      <div class="preview" onclick="openModal('floating-orb')">
+        <div class="float-orb"></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Floating Orb</div>
         <div class="use-case">Background decoration, hero sections, ambient lighting effects</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'floating-orb')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('floating-orb')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'floating-orb')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="rotate-star"></div></div>
+      <div class="preview" onclick="openModal('infinite-rotate')">
+        <div class="rotate-star"></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Infinite Rotate</div>
         <div class="use-case">Settings icons, refresh buttons, logo spinners</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'infinite-rotate')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('infinite-rotate')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'infinite-rotate')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview"><div class="morph-blob"></div></div>
+      <div class="preview" onclick="openModal('morphing-blob')">
+        <div class="morph-blob"></div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
+      </div>
       <div class="card-body">
         <div class="anim-name">Morphing Blob</div>
         <div class="use-case">Background shapes, profile pictures, abstract art sections</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'morphing-blob')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('morphing-blob')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'morphing-blob')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('wave-bar')">
         <div class="wave-bars">
           <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Wave Bar</div>
         <div class="use-case">Audio visualizers, music players, voice recording UI</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'wave-bar')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('wave-bar')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'wave-bar')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="preview">
+      <div class="preview" onclick="openModal('heartbeat')">
         <div class="hb-wrap">
           <svg class="hb-line" viewBox="0 0 200 44" width="200" height="44" fill="none">
             <polyline points="0,22 20,22 30,6 40,38 50,10 60,34 70,22 90,22 100,22 120,22 130,6 140,38 150,10 160,34 170,22 190,22 200,22"
               stroke="#c9a84c" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
           </svg>
         </div>
+        <span class="preview-tap-hint">ট্যাপ করো</span>
       </div>
       <div class="card-body">
         <div class="anim-name">Heartbeat Line</div>
         <div class="use-case">Health apps, live dashboards, signal/activity monitors</div>
-        <button class="copy-btn" onclick="copyCSS(this, 'heartbeat')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy CSS
-        </button>
+        <div class="card-btns">
+          <button class="info-btn" onclick="openModal('heartbeat')">ℹ️</button>
+          <button class="copy-btn" onclick="copyCSS(this,'heartbeat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy CSS
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1114,52 +1429,380 @@
 </main>
 
 <footer>
-  <p>Animation Library — 30 pure CSS keyframes · No dependencies · <span>Copy & paste ready</span></p>
+  <p>Made with <span>♥</span> · 30 pure CSS animations · PWA enabled · works offline</p>
 </footer>
 
-<div id="toast">✓ CSS copied to clipboard!</div>
-
 <script>
-const CSS_SNIPPETS = {
+// ══════════════════════════════════════════════
+// BENGALI ANIMATION DATA — ৩০টি
+// ══════════════════════════════════════════════
+const ANIM_DATA = {
+  'spinner': {
+    icon: '⟳',
+    enName: 'Spinner',
+    bnName: 'স্পিনার / ঘূর্ণন চক্র',
+    category: '⏳ Loading',
+    explanation: 'একটি গোলাকার বৃত্ত ক্রমাগত ঘুরতে থাকে। এটি দেখায় যে browser বা app এখন কোনো কাজ করছে — ব্যবহারকারীকে অপেক্ষা করতে বলা হচ্ছে। CSS-এ border-এর একটি অংশ আলাদা রঙ দিয়ে এটি বানানো হয়, তারপর rotate করা হয়।',
+    uses: ['API থেকে data আনার সময়', 'Form submit হওয়ার পর', 'Page বা ছবি load হওয়ার সময়', 'Login / logout এর সময়'],
+    meaning: 'এই animation ব্যবহারকারীকে বলে — "একটু অপেক্ষা করো, কাজ চলছে।" এটি না থাকলে user মনে করবে app freeze হয়ে গেছে।',
+    chips: ['ধৈর্য ধরো', 'কাজ চলছে', 'লোড হচ্ছে'],
+    cssKey: 'spinner'
+  },
+  'bounce-dots': {
+    icon: '•••',
+    enName: 'Bouncing Dots',
+    bnName: 'লাফানো ডট',
+    category: '⏳ Loading',
+    explanation: 'তিনটি ছোট বল একে একে উপরে-নিচে লাফায়। প্রতিটি বলের মধ্যে সামান্য সময়ের পার্থক্য থাকে (animation-delay), এতে ঢেউয়ের মতো দেখায়।',
+    uses: ['WhatsApp / Messenger-এ "কেউ টাইপ করছে" দেখাতে', 'Background-এ কোনো process চলার সময়', 'AI response generate হওয়ার সময়', 'Chat loading indicator হিসেবে'],
+    meaning: '"কেউ সক্রিয় আছে" বা "কিছু একটা হচ্ছে" — এই অনুভূতি দেয়। WhatsApp-এ typing indicator দেখলে যেমন মনে হয় কেউ reply দিচ্ছে, এটা ঠিক তেমনই।',
+    chips: ['টাইপিং ইন্ডিকেটর', 'প্রসেস চলছে', 'সক্রিয়'],
+    cssKey: 'bounce-dots'
+  },
+  'skeleton': {
+    icon: '▬▬',
+    enName: 'Skeleton Shimmer',
+    bnName: 'স্কেলেটন শিমার',
+    category: '⏳ Loading',
+    explanation: 'Content load হওয়ার আগে তার জায়গায় ধূসর রঙের placeholder দেখায়, সেই placeholder-এর উপর দিয়ে একটি আলোর ঝলক বাম থেকে ডানে যায়। এটা মনে করায় যে কাঠামো তৈরি হয়েছে, শুধু ভেতরের content আসছে।',
+    uses: ['Facebook, YouTube-এর মতো feed load হওয়ার সময়', 'Product card বা article load হওয়ার আগে', 'Profile ছবি ও নাম আসার আগে', 'Lazy loading section-এ'],
+    meaning: 'হাড়ের কাঠামো (skeleton) যেমন শরীরের ভেতরের structure, এই animation ঠিক তেমনি content-এর কাঠামো আগে দেখায়। ব্যবহারকারী বুঝতে পারে কোথায় কী আসবে।',
+    chips: ['কাঠামো দেখাচ্ছে', 'Content আসছে', 'Lazy Load'],
+    cssKey: 'skeleton'
+  },
+  'progress-bar': {
+    icon: '▓▓░',
+    enName: 'Progress Bar Fill',
+    bnName: 'প্রগ্রেস বার',
+    category: '⏳ Loading',
+    explanation: 'একটি horizontal bar বাম থেকে ডানে ধীরে ধীরে ভরে যায়। কাজ কতটুকু হয়েছে তা percentage হিসেবে visually দেখায়। CSS animation দিয়ে width 0% থেকে 100% করা হয়।',
+    uses: ['File upload / download-এর সময়', 'Form-এর ধাপ সম্পন্ন হওয়ার সাথে সাথে', 'Onboarding quiz বা survey-তে', 'Video playback progress দেখাতে'],
+    meaning: 'মানুষ জানতে চায় কত দূর এলো। Progress bar এই প্রশ্নের উত্তর দেয়। এটি উদ্বেগ কমায় এবং user-কে ধরে রাখে।',
+    chips: ['কতটুকু হলো', 'শেষ আসছে', 'অগ্রগতি'],
+    cssKey: 'progress-bar'
+  },
+  'circular-progress': {
+    icon: '◎',
+    enName: 'Circular Progress',
+    bnName: 'বৃত্তাকার প্রগ্রেস',
+    category: '⏳ Loading',
+    explanation: 'একটি গোলাকার পথ বরাবর রঙিন রেখা ঘুরতে থাকে। SVG stroke-dashoffset ব্যবহার করে এই effect তৈরি হয়। দেখতে যেন একটি বৃত্ত আঁকা হচ্ছে।',
+    uses: ['Timer countdown দেখাতে', 'Skill percentage বা profile completion', 'Download/upload circular indicator', 'Dashboard-এ metric দেখাতে'],
+    meaning: 'বৃত্তের পথে এগিয়ে যাওয়া মানে একটি চক্র সম্পূর্ণ হচ্ছে। এটি compact জায়গায় progress দেখানোর সেরা উপায়।',
+    chips: ['চক্র সম্পূর্ণ', 'কতটুকু বাকি', 'Timer'],
+    cssKey: 'circular-progress'
+  },
 
-'spinner': `/* Spinner */
-.spinner {
-  width: 40px;
-  height: 40px;
+  'success-check': {
+    icon: '✓',
+    enName: 'Success Checkmark',
+    bnName: 'সফলতার চিহ্ন',
+    category: '✅ Feedback',
+    explanation: 'প্রথমে একটি বৃত্ত ফুটে ওঠে, তারপর ভেতরে টিক চিহ্ন আঁকা হয়। দুটো আলাদা animation একের পর এক চলে — প্রথমে scale-in, তারপর check-draw।',
+    uses: ['Payment সফল হলে', 'Form submit হওয়ার পর', 'Task complete হলে', 'Registration সম্পন্ন হলে'],
+    meaning: 'টিক চিহ্ন সার্বজনীনভাবে "সঠিক" বা "সম্পন্ন" বোঝায়। এটি দেখলে ব্যবহারকারী স্বস্তি পায় এবং আত্মবিশ্বাস বাড়ে।',
+    chips: ['সফল!', 'কাজ শেষ', 'নিশ্চিত'],
+    cssKey: 'success-check'
+  },
+  'error-shake': {
+    icon: '⚠',
+    enName: 'Error Shake',
+    bnName: 'ভুলের কাঁপুনি',
+    category: '✅ Feedback',
+    explanation: 'Element দ্রুত বাম-ডান কাঁপতে থাকে। এটি মাথা নাড়িয়ে "না" বলার মতো — শরীরের স্বাভাবিক ভাষা থেকে অনুপ্রাণিত।',
+    uses: ['ভুল password দিলে', 'Form validation fail হলে', 'Access denied হলে', 'Wrong OTP দিলে'],
+    meaning: 'কাঁপুনি মানেই কিছু একটা ঠিক হয়নি। মানুষ স্বাভাবিকভাবেই বুঝতে পারে এই ভাষা। শুধু লাল রঙ দিলে যতটুকু বোঝায়, কাঁপুনি দিলে আরও জোরালোভাবে বোঝায়।',
+    chips: ['ভুল হয়েছে', 'আবার চেষ্টা করো', 'Error!'],
+    cssKey: 'error-shake'
+  },
+  'warning-pulse': {
+    icon: '⚡',
+    enName: 'Warning Pulse',
+    bnName: 'সতর্কতার স্পন্দন',
+    category: '✅ Feedback',
+    explanation: 'একটি উজ্জ্বল আইকনের চারদিকে আলোর বলয় বারবার ছড়িয়ে পড়ে এবং মিলিয়ে যায়। হৃদপিণ্ডের স্পন্দনের মতো দেখতে। box-shadow দিয়ে এই glow তৈরি হয়।',
+    uses: ['System alert বা warning দেখাতে', 'Low battery / storage notification', 'Notification badge যখন নতুন কিছু আসে', 'Live broadcasting indicator'],
+    meaning: '"মনোযোগ দাও!" — এই animation চিৎকার না করে কিন্তু নিরন্তর দৃষ্টি আকর্ষণ করে। জরুরি কিছু জানাতে এটি সবচেয়ে কার্যকর।',
+    chips: ['সতর্ক থাকো', 'নতুন নোটিফিকেশন', 'মনোযোগ দাও'],
+    cssKey: 'warning-pulse'
+  },
+  'confetti': {
+    icon: '🎉',
+    enName: 'Confetti Burst',
+    bnName: 'আনন্দের ঝলক',
+    category: '✅ Feedback',
+    explanation: 'রঙিন ছোট টুকরো কেন্দ্র থেকে চারদিকে ছিটকে পড়ে এবং মিলিয়ে যায়। প্রতিটি টুকরো আলাদা দিকে (CSS variable --ang) এবং আলাদা সময়ে (animation-delay) চলে।',
+    uses: ['Achievement unlock হলে', 'Goal পূরণ হলে', 'Birthday বা Anniversary-তে', 'Quiz-এ সর্বোচ্চ নম্বর পেলে'],
+    meaning: 'উৎসবের আনন্দ! মানুষ যখন সফল হয়, তখন উদযাপন করতে চায়। এই animation সেই মুহূর্তকে স্মরণীয় করে তোলে।',
+    chips: ['অভিনন্দন!', 'উদযাপন', 'সাফল্য'],
+    cssKey: 'confetti'
+  },
+  'ripple': {
+    icon: '◉',
+    enName: 'Ripple Click',
+    bnName: 'ক্লিকের ঢেউ',
+    category: '✅ Feedback',
+    explanation: 'Button-এ ক্লিক করলে কেন্দ্র থেকে একটি বৃত্তাকার ঢেউ ছড়িয়ে পড়ে, ঠিক পানিতে পাথর ফেললে যেমন হয়। scale(0) থেকে scale(8) পর্যন্ত বড় হয়ে মিলিয়ে যায়।',
+    uses: ['Button press feedback', 'Touch response Material Design-এ', 'Icon click confirmation', 'যেকোনো interactive element-এ'],
+    meaning: '"তোমার ক্লিক পেয়েছি" — এই confirmation দেয়। পানির ঢেউয়ের মতো স্বাভাবিক অনুভূতি তৈরি করে। Google-এর Material Design-এ এটি সর্বত্র ব্যবহৃত।',
+    chips: ['ক্লিক নিশ্চিত', 'স্পর্শ অনুভূতি', 'Feedback'],
+    cssKey: 'ripple'
+  },
+
+  'fade-in-up': {
+    icon: '↑',
+    enName: 'Fade In Up',
+    bnName: 'ফেড ইন আপ',
+    category: '🚀 Entrance',
+    explanation: 'Element নিচ থেকে উপরে উঠতে উঠতে দৃশ্যমান হয়। opacity 0 থেকে 1 এবং translateY(20px) থেকে 0-তে আসে। scroll করলে section reveal হওয়ার সবচেয়ে জনপ্রিয় পদ্ধতি।',
+    uses: ['Scroll করলে section reveal হতে', 'Modal বা popup খোলার সময়', 'Hero section-এর headline আসার সময়', 'Card grid load হওয়ার সময়'],
+    meaning: '"নিচ থেকে উঠে আসা" মানে কিছু নতুন আসছে, আগ্রহ তৈরি হচ্ছে। এটি সবচেয়ে natural এবং সুন্দর entrance effect।',
+    chips: ['নতুন কিছু আসছে', 'Reveal', 'স্বাগত'],
+    cssKey: 'fade-in-up'
+  },
+  'slide-in-left': {
+    icon: '←',
+    enName: 'Slide In Left',
+    bnName: 'বাম থেকে স্লাইড',
+    category: '🚀 Entrance',
+    explanation: 'Element বাম দিক থেকে এসে নির্দিষ্ট জায়গায় থামে। translateX(-40px) থেকে 0-তে আসে। মনে হয় কোনো কিছু পর্দার বাইরে থেকে প্রবেশ করছে।',
+    uses: ['Sidebar বা drawer menu খোলার সময়', 'Toast notification বাম দিক থেকে আসলে', 'Side panel বা filter panel reveal', 'Step-by-step wizard-এ পরবর্তী ধাপ'],
+    meaning: 'বাম থেকে আসা মানে "নতুন কিছু প্রবেশ করছে।" Drawer menu-তে এটি ব্যবহার করলে মনে হয় সত্যিকারের একটি দরজা খুলছে।',
+    chips: ['প্রবেশ', 'Drawer খুলছে', 'নতুন ধাপ'],
+    cssKey: 'slide-in-left'
+  },
+  'zoom-in': {
+    icon: '⊕',
+    enName: 'Zoom In',
+    bnName: 'জুম ইন',
+    category: '🚀 Entrance',
+    explanation: 'Element ছোট থেকে বড় হয়ে স্বাভাবিক আকারে আসে। scale(0.3) থেকে scale(1)-এ। cubic-bezier spring effect দিয়ে শেষে সামান্য bounce হয়।',
+    uses: ['Image lightbox বা gallery খোলার সময়', 'Dialog বা modal open হওয়ার সময়', 'Notification popup আসার সময়', 'Feature card highlight করতে'],
+    meaning: 'দূর থেকে সামনে আসা মানে "এটা গুরুত্বপূর্ণ, মনোযোগ দাও।" নিজে থেকে সামনে এগিয়ে আসার ভাব তৈরি করে।',
+    chips: ['সামনে আসছে', 'গুরুত্বপূর্ণ', 'Focus'],
+    cssKey: 'zoom-in'
+  },
+  'flip-in-x': {
+    icon: '↻',
+    enName: 'Flip In X',
+    bnName: 'ফ্লিপ / উল্টানো',
+    category: '🚀 Entrance',
+    explanation: 'Element উপর থেকে সামনে ঘুরে আসে — যেন একটি কার্ড উল্টানো হচ্ছে। 3D perspective এবং rotateX ব্যবহার করে এই effect তৈরি হয়।',
+    uses: ['Card flip করে উত্তর reveal করতে', 'FAQ item toggle করতে', 'Price reveal করতে', 'Flash card বা quiz app-এ'],
+    meaning: '"লুকানো জিনিস উন্মোচিত হচ্ছে" — এই অনুভূতি দেয়। Card উল্টানোর স্বাভাবিক ক্রিয়া থেকে অনুপ্রাণিত, তাই instantly বোধগম্য।',
+    chips: ['উন্মোচন', 'Card উল্টানো', 'Reveal'],
+    cssKey: 'flip-in-x'
+  },
+  'blur-to-clear': {
+    icon: '◐',
+    enName: 'Blur to Clear',
+    bnName: 'ঝাপসা থেকে স্পষ্ট',
+    category: '🚀 Entrance',
+    explanation: 'Element ঝাপসা (blur) অবস্থা থেকে ক্রমশ স্পষ্ট হয়। filter: blur(12px) থেকে blur(0)-এ আসে। মনে হয় চোখের সামনে কুয়াশা সরে যাচ্ছে।',
+    uses: ['Page transition হওয়ার সময়', 'Important moment focus করতে', 'Spoiler reveal করতে', 'Background blur থেকে foreground focus'],
+    meaning: '"ধীরে ধীরে পরিষ্কার হচ্ছে" — রহস্য উন্মোচনের অনুভূতি। সিনেমায় flashback বা dream sequence-এ যেভাবে দৃশ্য clear হয়, ঠিক সেই ভাব।',
+    chips: ['রহস্য উন্মোচন', 'স্পষ্ট হচ্ছে', 'Focus'],
+    cssKey: 'blur-to-clear'
+  },
+
+  'scale-grow': {
+    icon: '⟷',
+    enName: 'Scale Grow',
+    bnName: 'বড় হওয়া',
+    category: '🖱 Hover',
+    explanation: 'Mouse hover করলে element সামান্য বড় হয়। scale(1) থেকে scale(1.1) — মাত্র ১০% বড় হওয়া, কিন্তু চোখে ভালোভাবেই ধরা পড়ে। CSS transition দিয়ে smooth করা।',
+    uses: ['Product card hover করলে', 'Button hover feedback', 'Image gallery thumbnail hover', 'Feature icon hover করলে'],
+    meaning: '"আমাকে দেখো!" — সূক্ষ্মভাবে ব্যবহারকারীর দৃষ্টি আকর্ষণ করে। বড় হওয়া মানে এটি clickable বা interactive, এই signal দেয়।',
+    chips: ['Interactive', 'ক্লিক করো', 'Hover করো'],
+    cssKey: 'scale-grow'
+  },
+  'glow-border': {
+    icon: '✦',
+    enName: 'Glow Border',
+    bnName: 'জ্বলন্ত বর্ডার',
+    category: '🖱 Hover',
+    explanation: 'Element-এর চারপাশে আলোর আভা ছড়িয়ে পড়ে। CSS box-shadow দিয়ে গ্লো তৈরি হয় এবং hover এ animate হয়। Premium এবং futuristic অনুভূতি দেয়।',
+    uses: ['CTA (Call-to-Action) button-এ', 'Active বা selected card দেখাতে', 'Premium feature highlight করতে', 'Dark theme-এ active element দেখাতে'],
+    meaning: '"এটি বিশেষ!" — আলোর গ্লো দিয়ে element-কে অন্যদের থেকে আলাদা করা। Dark theme-এ এটি অত্যন্ত কার্যকর এবং আকর্ষণীয়।',
+    chips: ['বিশেষ', 'Active', 'Premium'],
+    cssKey: 'glow-border'
+  },
+  'underline-draw': {
+    icon: '‾',
+    enName: 'Underline Draw',
+    bnName: 'রেখা আঁকা',
+    category: '🖱 Hover',
+    explanation: 'Hover করলে text-এর নিচে বাম থেকে ডানে একটি রঙিন রেখা আঁকা হয়। ::after pseudo-element-এর width 0% থেকে 100%-এ যায়। কলম দিয়ে দাগ দেওয়ার মতো।',
+    uses: ['Navigation menu link-এ', 'Anchor text বা hyperlink-এ', 'Menu item hover-এ', 'Article এর tag বা category link-এ'],
+    meaning: '"এটি একটি link, ক্লিক করা যাবে" — এই বার্তা দেয়। লেখার নিচে দাগ দেওয়া মানে সেটি গুরুত্বপূর্ণ বা clickable, এটা আমরা ছোটবেলা থেকেই জানি।',
+    chips: ['Link', 'ক্লিকযোগ্য', 'Navigation'],
+    cssKey: 'underline-draw'
+  },
+  'color-sweep': {
+    icon: '▶',
+    enName: 'Color Sweep',
+    bnName: 'রঙের ঢেউ',
+    category: '🖱 Hover',
+    explanation: 'Hover করলে background রঙ বাম থেকে ডানে ছড়িয়ে পড়ে পুরো button ভরে নেয়। ::before pseudo-element-কে left: -100% থেকে left: 0-তে নিয়ে আসা হয়।',
+    uses: ['Primary CTA button-এ', 'Submit বা Buy button-এ', 'Toggle switch-এ', 'Feature comparison card button-এ'],
+    meaning: '"এখন পদক্ষেপ নাও!" — রঙ ভরে যাওয়া মানে পরিবর্তন আসছে। এটি সবচেয়ে attention-grabbing hover effect, বড় action নেওয়ার আগে ব্যবহার করা হয়।',
+    chips: ['Action নাও', 'শক্তিশালী CTA', 'পরিবর্তন'],
+    cssKey: 'color-sweep'
+  },
+  '3d-tilt': {
+    icon: '◇',
+    enName: '3D Tilt',
+    bnName: '৩ডি হেলানো',
+    category: '🖱 Hover',
+    explanation: 'Element তিনমাত্রিকভাবে বিভিন্ন দিকে হেলে পড়ে। CSS perspective এবং rotateX, rotateY দিয়ে এই 3D effect তৈরি হয়। সাধারণত mouse position track করে JS দিয়ে বানানো হয়।',
+    uses: ['Portfolio project card-এ', 'Product showcase card-এ', 'Team member card-এ', 'Gaming বা premium app card-এ'],
+    meaning: '"এটি বাস্তব বস্তুর মতো!" — flat screen-এ depth তৈরি করে। বই বা ছবি হাতে ধরে কাত করলে যেমন দেখায়, সেই অনুভূতি দেয়।',
+    chips: ['গভীরতা', '3D অনুভূতি', 'Premium'],
+    cssKey: '3d-tilt'
+  },
+
+  'typewriter': {
+    icon: '|',
+    enName: 'Typewriter Cursor',
+    bnName: 'টাইপরাইটার',
+    category: '✍️ Text',
+    explanation: 'Text ধীরে ধীরে টাইপ হতে দেখায়, শেষে cursor জ্বলে-নেভে। CSS steps() function দিয়ে text reveal হয় এবং আলাদা animation দিয়ে cursor blink করে।',
+    uses: ['Hero section-এর headline-এ', 'Terminal বা code demo-তে', 'Portfolio tagline-এ', 'AI chat interface-এ'],
+    meaning: '"কেউ এখন লিখছে" — live এবং dynamic অনুভূতি দেয়। Typewriter দেখলে মানুষ পড়তে থামে এবং পুরো text পড়ে। Attention ধরে রাখার দারুণ উপায়।',
+    chips: ['Live লেখা', 'Dynamic', 'Attention'],
+    cssKey: 'typewriter'
+  },
+  'gradient-text': {
+    icon: '◈',
+    enName: 'Gradient Flow Text',
+    bnName: 'রঙিন প্রবাহী লেখা',
+    category: '✍️ Text',
+    explanation: 'Text-এর মধ্য দিয়ে বিভিন্ন রঙের gradient প্রবাহিত হয়। background-clip: text দিয়ে text-এর ভেতরে gradient আটকানো হয় এবং background-position animate করা হয়।',
+    uses: ['Brand logo বা tagline-এ', 'Hero heading-এ', 'Feature benefit text-এ', 'Premium section title-এ'],
+    meaning: '"এটি বিশেষ, এটি আলাদা!" — সাদামাটা text-এর জায়গায় রঙিন প্রবাহ মানে এটি গুরুত্বপূর্ণ। ব্র্যান্ড পরিচিতিতে এটি অনন্য।',
+    chips: ['রঙিন', 'প্রিমিয়াম', 'Brand'],
+    cssKey: 'gradient-text'
+  },
+  'letter-bounce': {
+    icon: 'B!',
+    enName: 'Letter Bounce',
+    bnName: 'অক্ষরের লাফ',
+    category: '✍️ Text',
+    explanation: 'প্রতিটি অক্ষর আলাদাভাবে উপরে-নিচে লাফায়, একটু পর পর। প্রতিটি span-এ আলাদা animation-delay দেওয়া হয় যেন ঢেউয়ের মতো পর্যায়ক্রমে লাফায়।',
+    uses: ['Kids বা educational app-এ', 'Game score বা level up screen-এ', 'Celebration হেডলাইনে', 'Fun loading screen-এ'],
+    meaning: '"আনন্দ এবং খেলাধুলা!" — প্রতিটি অক্ষরের নাচ দেখে মন ভালো হয়ে যায়। যেখানে হাসি এবং উৎসাহ দরকার, সেখানে এটি দারুণ কাজ করে।',
+    chips: ['আনন্দ', 'খেলাধুলা', 'উৎসব'],
+    cssKey: 'letter-bounce'
+  },
+  'blur-reveal': {
+    icon: '◑',
+    enName: 'Blur Reveal',
+    bnName: 'ঝাপসা থেকে প্রকাশ',
+    category: '✍️ Text',
+    explanation: 'Text বারবার ঝাপসা থেকে স্পষ্ট হয় এবং আবার ঝাপসা হয়ে যায়। filter: blur() animate হয় opacity-র সাথে। রহস্যময় আলোর মতো effect।',
+    uses: ['Loading text-এ যখন data আসছে', 'Spoiler text reveal করতে', 'Dramatic announcement-এ', 'Password hint দেখাতে'],
+    meaning: '"এটা দেখার চেষ্টা করো" — বারবার আসা-যাওয়া কৌতূহল তৈরি করে। যেন কুয়াশায় কিছু একটা দেখা যাচ্ছে কিন্তু স্পষ্ট নয়।',
+    chips: ['রহস্যময়', 'কৌতূহল', 'Reveal'],
+    cssKey: 'blur-reveal'
+  },
+  'wave-letters': {
+    icon: '~',
+    enName: 'Wave Letters',
+    bnName: 'ঢেউয়ের মতো অক্ষর',
+    category: '✍️ Text',
+    explanation: 'প্রতিটি অক্ষর উপরে-নিচে দুলতে থাকে এবং সামান্য ঘোরে। ঢেউয়ের মতো পর্যায়ক্রমিক নড়াচড়া হয় animation-delay দিয়ে। translateY এবং rotate একসাথে ব্যবহার হয়।',
+    uses: ['Music বা audio app-এ', 'Podcast player-এর banner-এ', 'Banner বা marquee text-এ', 'Fun greeting page-এ'],
+    meaning: '"সংগীতের তাল" — ঢেউয়ের মতো দুলুনি শুনতে না পেলেও অনুভব করা যায়। Music app-এ এটি দেখলে মনে হয় গান শুনছি।',
+    chips: ['সংগীত', 'ছন্দ', 'প্রবাহ'],
+    cssKey: 'wave-letters'
+  },
+
+  'floating-orb': {
+    icon: '○',
+    enName: 'Floating Orb',
+    bnName: 'ভাসমান গোলক',
+    category: '🎨 Decorative',
+    explanation: 'একটি উজ্জ্বল গোলাকার বল ধীরে ধীরে উপরে-নিচে ভাসতে থাকে। translateY এবং scale একসাথে animate হয়। radial-gradient দিয়ে 3D গোলকের ভাব তৈরি হয়।',
+    uses: ['Hero section-এর background decoration-এ', 'App landing page-এ ambient effect', 'Dark theme-এ glowing accent', 'Dreamy বা abstract section-এ'],
+    meaning: '"শান্তি এবং স্বপ্নময়তা" — ধীর ভাসমান গোলক দেখলে মন শান্ত হয়। Background-এ এটি থাকলে page আরও প্রাণবন্ত লাগে কিন্তু content-কে বিরক্ত করে না।',
+    chips: ['Ambient', 'শান্তিময়', 'Decoration'],
+    cssKey: 'floating-orb'
+  },
+  'infinite-rotate': {
+    icon: '↺',
+    enName: 'Infinite Rotate',
+    bnName: 'অনন্ত ঘূর্ণন',
+    category: '🎨 Decorative',
+    explanation: 'Element অবিরাম এক দিকে ঘুরতে থাকে। rotate(360deg) animation linear timing দিয়ে চলে তাই কোনো থেমে-থেমে ভাব নেই, একদম smooth।',
+    uses: ['Settings gear icon-এ', 'Refresh / reload button-এ', 'Loading logo animation-এ', 'Sun বা planet decoration-এ'],
+    meaning: '"কাজ চলছে" বা "ক্লিক করো" — ঘূর্ণায়মান icon দেখলে মনে হয় এটি active। Settings icon যখন ঘোরে, মনে হয় system কাজ করছে।',
+    chips: ['Active', 'ঘুরছে', 'চলমান'],
+    cssKey: 'infinite-rotate'
+  },
+  'morphing-blob': {
+    icon: '◉',
+    enName: 'Morphing Blob',
+    bnName: 'রূপ পরিবর্তনকারী আকৃতি',
+    category: '🎨 Decorative',
+    explanation: 'একটি shape বিভিন্ন organic রূপ নিতে থাকে — গোল, লম্বা, বেঢপ। CSS border-radius-এর ৮টি value বদলিয়ে এই জৈব আকৃতি তৈরি হয়। প্রকৃতির আকৃতির মতো।',
+    uses: ['Abstract art section-এ', 'Profile picture frame-এ', 'Background blob decoration-এ', 'Creative portfolio-তে'],
+    meaning: '"জীবন্ত এবং organic" — সরল জ্যামিতিক আকৃতি নয়, প্রকৃতির মতো অনিয়মিত আকার বদলানো। এটি দেখলে page আরও creative মনে হয়।',
+    chips: ['Organic', 'Creative', 'জীবন্ত'],
+    cssKey: 'morphing-blob'
+  },
+  'wave-bar': {
+    icon: '▌▍▎',
+    enName: 'Wave Bar',
+    bnName: 'ঢেউ বার / অডিও ভিজ্যুয়ালাইজার',
+    category: '🎨 Decorative',
+    explanation: 'কয়েকটি উল্লম্ব বার উপরে-নিচে ওঠানামা করে, মনে হয় শব্দের তরঙ্গ দেখা যাচ্ছে। প্রতিটি bar আলাদা উচ্চতায় এবং আলাদা সময়ে scaleY animate হয়।',
+    uses: ['Music player-এ গান চলার সময়', 'Podcast বা audio recording UI-তে', 'Voice message visualization-এ', 'Equalizer decoration হিসেবে'],
+    meaning: '"শব্দ দেখা যাচ্ছে!" — শ্রবণ অনুভূতিকে দৃশ্যমান করে। Music app-এ এটি থাকলে মনে হয় সত্যিকারের গান বাজছে, app আরও জীবন্ত লাগে।',
+    chips: ['অডিও', 'সংগীত', 'তরঙ্গ'],
+    cssKey: 'wave-bar'
+  },
+  'heartbeat': {
+    icon: '♥',
+    enName: 'Heartbeat Line',
+    bnName: 'হৃদস্পন্দন রেখা',
+    category: '🎨 Decorative',
+    explanation: 'একটি ECG/EKG-এর মতো রেখা অবিরাম বাম দিকে সরতে থাকে। দুটো একই pattern পাশাপাশি রেখে seamless loop তৈরি করা হয়, translateX(-50%) animate হয়।',
+    uses: ['Health বা fitness app-এ', 'Live dashboard বা monitoring UI-তে', 'Medical app-এ', 'Activity বা signal tracker-এ'],
+    meaning: '"জীবন আছে, system চলছে" — হৃদস্পন্দনের রেখা সার্বজনীনভাবে "জীবিত" এবং "সক্রিয়" বোঝায়। Health app-এ এটি দেখলে trust তৈরি হয়।',
+    chips: ['জীবিত', 'সক্রিয়', 'Monitor'],
+    cssKey: 'heartbeat'
+  }
+};
+
+// ══════════════════════════════════════════════
+// CSS SNIPPETS
+// ══════════════════════════════════════════════
+const CSS_SNIPPETS = {
+'spinner': `.anim-spinner {
+  width: 40px; height: 40px;
   border-radius: 50%;
   border: 3px solid rgba(201,168,76,0.2);
   border-top-color: #c9a84c;
   animation: spin 0.8s linear infinite;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}`,
+@keyframes spin { to { transform: rotate(360deg); } }`,
 
-'bounce-dots': `/* Bouncing Dots */
-.bounce-dots { display: flex; gap: 8px; align-items: center; }
+'bounce-dots': `.bounce-dots { display: flex; gap: 8px; align-items: center; }
 .bounce-dots span {
-  width: 10px; height: 10px;
-  border-radius: 50%;
+  width: 10px; height: 10px; border-radius: 50%;
   background: #c9a84c;
   animation: bounce-dot 0.7s ease-in-out infinite alternate;
 }
 .bounce-dots span:nth-child(2) { animation-delay: 0.15s; }
-.bounce-dots span:nth-child(3) { animation-delay: 0.30s; }
+.bounce-dots span:nth-child(3) { animation-delay: 0.3s; }
 @keyframes bounce-dot {
   from { transform: translateY(0); opacity: 1; }
   to   { transform: translateY(-14px); opacity: 0.5; }
 }`,
 
-'skeleton': `/* Skeleton Shimmer */
-.skeleton-line {
-  height: 10px;
-  border-radius: 5px;
-  background: linear-gradient(
-    90deg,
-    #21262d 25%,
-    #2d333b 50%,
-    #21262d 75%
-  );
+'skeleton': `.skeleton-line {
+  height: 10px; border-radius: 5px;
+  background: linear-gradient(90deg, #21262d 25%, #2d333b 50%, #21262d 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -1168,37 +1811,22 @@ const CSS_SNIPPETS = {
   to   { background-position: -200% 0; }
 }`,
 
-'progress-bar': `/* Progress Bar Fill */
-.progress-track {
-  height: 8px;
-  background: #0d1117;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  border-radius: 4px;
+'progress-bar': `.progress-fill {
+  height: 100%; width: 0%;
   background: linear-gradient(90deg, #c9a84c, #f0c96e);
   animation: fill-bar 2s ease-in-out infinite;
 }
 @keyframes fill-bar {
-  0%   { width: 0%;   opacity: 1; }
-  70%  { width: 100%; opacity: 1; }
-  85%  { width: 100%; opacity: 0; }
-  100% { width: 0%;   opacity: 0; }
+  0%  { width: 0%;   opacity: 1; }
+  70% { width: 100%; opacity: 1; }
+  85% { width: 100%; opacity: 0; }
+  100%{ width: 0%;   opacity: 0; }
 }`,
 
-'circular-progress': `/* Circular Progress */
-/* SVG: <circle class="circ-fill" cx="25" cy="25" r="22"/> */
-.circ-fill {
-  fill: none;
-  stroke: #c9a84c;
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 138.2; /* 2π × r */
+'circular-progress': `.circ-fill {
+  fill: none; stroke: #c9a84c; stroke-width: 4;
+  stroke-linecap: round; stroke-dasharray: 138.2;
   animation: circ-spin 2s ease-in-out infinite;
-  transform-origin: center;
-  transform: rotate(-90deg);
 }
 @keyframes circ-spin {
   0%   { stroke-dashoffset: 138.2; }
@@ -1206,34 +1834,22 @@ const CSS_SNIPPETS = {
   100% { stroke-dashoffset: -138.2; }
 }`,
 
-'success-check': `/* Success Checkmark Draw */
-.check-circle {
-  width: 50px; height: 50px;
-  border-radius: 50%;
+'success-check': `.check-circle {
+  width: 50px; height: 50px; border-radius: 50%;
   border: 3px solid #3fb950;
   animation: scale-in 0.4s ease forwards;
 }
 .check-path {
-  position: absolute; top: 11px; left: 9px;
-  width: 30px; height: 20px;
   border-left: 3px solid #3fb950;
   border-bottom: 3px solid #3fb950;
   transform: rotate(-45deg) scaleX(0);
-  transform-origin: left center;
   animation: check-draw 0.35s 0.35s ease forwards;
 }
-@keyframes scale-in {
-  from { transform: scale(0); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-@keyframes check-draw {
-  from { transform: rotate(-45deg) scaleX(0); }
-  to   { transform: rotate(-45deg) scaleX(1); }
-}`,
+@keyframes scale-in { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes check-draw { from{transform:rotate(-45deg) scaleX(0)} to{transform:rotate(-45deg) scaleX(1)} }`,
 
-'error-shake': `/* Error Shake */
-.error-box {
-  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+'error-shake': `.error-box {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) infinite;
 }
 @keyframes shake {
   0%,100% { transform: translateX(0); }
@@ -1241,8 +1857,7 @@ const CSS_SNIPPETS = {
   30%,70% { transform: translateX(6px); }
 }`,
 
-'warning-pulse': `/* Warning Pulse */
-.warn-badge {
+'warning-pulse': `.warn-badge {
   animation: warn-pulse 1.4s ease-in-out infinite;
 }
 @keyframes warn-pulse {
@@ -1250,40 +1865,30 @@ const CSS_SNIPPETS = {
   50%      { box-shadow: 0 0 0 14px rgba(210,153,34,0); }
 }`,
 
-'confetti': `/* Confetti Burst */
-/* Use 8 .confetti-dot elements; set --ang per element */
-.confetti-dot {
+'confetti': `.confetti-dot {
   position: absolute; top: 50%; left: 50%;
   width: 8px; height: 8px; border-radius: 2px;
   animation: confetti-burst 1.5s ease-out infinite;
 }
-/* Example nth-child overrides: */
-.confetti-dot:nth-child(1){ background:#c9a84c; --ang:0deg; }
-.confetti-dot:nth-child(2){ background:#3fb950; --ang:45deg; animation-delay:0.1s; }
-/* ... repeat for 8 children, 45deg steps */
 @keyframes confetti-burst {
   0%   { transform: translate(-50%,-50%) rotate(var(--ang)) translateX(0) scale(1); opacity:1; }
   100% { transform: translate(-50%,-50%) rotate(var(--ang)) translateX(36px) scale(0); opacity:0; }
 }`,
 
-'ripple': `/* Ripple Click */
-.ripple-btn { position: relative; overflow: hidden; }
-.ripple-ring {
+'ripple': `.ripple-ring {
   position: absolute; top: 50%; left: 50%;
-  width: 10px; height: 10px;
-  border-radius: 50%;
+  width: 10px; height: 10px; border-radius: 50%;
   background: rgba(201,168,76,0.5);
   transform: translate(-50%,-50%) scale(0);
   animation: ripple 1.8s ease-out infinite;
 }
 @keyframes ripple {
-  0%  { transform: translate(-50%,-50%) scale(0); opacity: 1; }
-  80% { transform: translate(-50%,-50%) scale(8); opacity: 0; }
-  100%{ opacity: 0; }
+  0%  { transform: translate(-50%,-50%) scale(0); opacity:1; }
+  80% { transform: translate(-50%,-50%) scale(8); opacity:0; }
+  100%{ opacity:0; }
 }`,
 
-'fade-in-up': `/* Fade In Up */
-.fade-up {
+'fade-in-up': `.fade-in {
   animation: fade-in-up 0.6s ease both;
 }
 @keyframes fade-in-up {
@@ -1291,8 +1896,7 @@ const CSS_SNIPPETS = {
   to   { opacity: 1; transform: translateY(0); }
 }`,
 
-'slide-in-left': `/* Slide In Left */
-.slide-in {
+'slide-in-left': `.slide-in {
   animation: slide-left 0.5s ease both;
 }
 @keyframes slide-left {
@@ -1300,8 +1904,7 @@ const CSS_SNIPPETS = {
   to   { opacity: 1; transform: translateX(0); }
 }`,
 
-'zoom-in': `/* Zoom In */
-.zoom-in {
+'zoom-in': `.zoom-in {
   animation: zoom-in 0.4s cubic-bezier(.34,1.56,.64,1) both;
 }
 @keyframes zoom-in {
@@ -1309,8 +1912,7 @@ const CSS_SNIPPETS = {
   to   { opacity: 1; transform: scale(1); }
 }`,
 
-'flip-in-x': `/* Flip In X */
-.flip-in {
+'flip-in-x': `.flip-in {
   animation: flip-x 0.6s ease both;
 }
 @keyframes flip-x {
@@ -1318,8 +1920,7 @@ const CSS_SNIPPETS = {
   to   { opacity: 1; transform: perspective(400px) rotateX(0); }
 }`,
 
-'blur-to-clear': `/* Blur to Clear */
-.blur-clear {
+'blur-to-clear': `.blur-clear {
   animation: blur-clear 0.7s ease both;
 }
 @keyframes blur-clear {
@@ -1327,28 +1928,17 @@ const CSS_SNIPPETS = {
   to   { opacity: 1; filter: blur(0); }
 }`,
 
-'scale-grow': `/* Scale Grow (Hover) */
-.btn:hover {
-  animation: scale-grow 0.2s ease forwards;
-}
-@keyframes scale-grow {
-  to { transform: scale(1.1); }
-}
-/* Or simpler: */
-.btn { transition: transform 0.2s ease; }
+'scale-grow': `.btn { transition: transform 0.2s ease; }
 .btn:hover { transform: scale(1.1); }`,
 
-'glow-border': `/* Glow Border (Hover) */
-.btn { transition: box-shadow 0.2s ease; }
+'glow-border': `.btn { transition: box-shadow 0.2s ease; }
 .btn:hover {
   box-shadow: 0 0 16px 4px rgba(201,168,76,0.4);
 }`,
 
-'underline-draw': `/* Underline Draw (Hover) */
-.link { position: relative; }
+'underline-draw': `.link { position: relative; }
 .link::after {
-  content: '';
-  position: absolute;
+  content: ''; position: absolute;
   bottom: -2px; left: 0;
   width: 0%; height: 2px;
   background: #c9a84c;
@@ -1356,25 +1946,22 @@ const CSS_SNIPPETS = {
 }
 .link:hover::after { width: 100%; }`,
 
-'color-sweep': `/* Color Sweep (Hover) */
-.btn {
+'color-sweep': `.btn {
   position: relative; overflow: hidden;
   transition: color 0.3s ease;
 }
 .btn::before {
-  content: '';
-  position: absolute; top: 0; left: -100%;
+  content: ''; position: absolute;
+  top: 0; left: -100%;
   width: 100%; height: 100%;
   background: #c9a84c;
-  transition: left 0.3s ease;
-  z-index: 0;
+  transition: left 0.3s ease; z-index: 0;
 }
 .btn:hover { color: #0d1117; }
 .btn:hover::before { left: 0; }
 .btn span { position: relative; z-index: 1; }`,
 
-'3d-tilt': `/* 3D Tilt (Hover — use JS for cursor-tracking) */
-.card {
+'3d-tilt': `.card {
   transition: transform 0.3s ease;
   transform-style: preserve-3d;
 }
@@ -1382,32 +1969,19 @@ const CSS_SNIPPETS = {
   transform: perspective(600px) rotateY(8deg) rotateX(-4deg);
 }`,
 
-'typewriter': `/* Typewriter Cursor */
-.type-text {
-  overflow: hidden;
-  white-space: nowrap;
-  width: 0;
-  animation: typing 3s steps(20) infinite;
+'typewriter': `.type-text {
+  overflow: hidden; white-space: nowrap;
+  width: 0; animation: typing 3s steps(20) infinite;
 }
 .cursor {
-  width: 2px; height: 1em;
-  background: #c9a84c;
+  width: 2px; height: 1em; background: #c9a84c;
   animation: cursor-blink 0.7s step-end infinite;
 }
-@keyframes typing {
-  0%,100% { width: 0; }
-  40%,70%  { width: 12em; }
-}
-@keyframes cursor-blink {
-  0%,100% { opacity: 1; }
-  50%      { opacity: 0; }
-}`,
+@keyframes typing { 0%,100%{width:0} 40%,70%{width:12em} }
+@keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }`,
 
-'gradient-text': `/* Gradient Flow Text */
-.grad-text {
-  background: linear-gradient(
-    90deg, #c9a84c, #f0c96e, #58a6ff, #3fb950, #c9a84c
-  );
+'gradient-text': `.grad-text {
+  background: linear-gradient(90deg, #c9a84c, #f0c96e, #58a6ff, #3fb950, #c9a84c);
   background-size: 300% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1419,77 +1993,65 @@ const CSS_SNIPPETS = {
   to   { background-position: 300% 50%; }
 }`,
 
-'letter-bounce': `/* Letter Bounce */
-/* Wrap each letter in a <span> */
+'letter-bounce': `/* প্রতিটি অক্ষর <span>-এ রাখুন */
 .letter-bounce span {
   display: inline-block;
   animation: letter-up 1.2s ease-in-out infinite;
 }
 .letter-bounce span:nth-child(2) { animation-delay: 0.08s; }
 .letter-bounce span:nth-child(3) { animation-delay: 0.16s; }
-/* ... continue for each letter */
 @keyframes letter-up {
   0%,100% { transform: translateY(0); }
-  40%      { transform: translateY(-10px); }
+  40%     { transform: translateY(-10px); }
 }`,
 
-'blur-reveal': `/* Blur Reveal */
-.blur-reveal {
+'blur-reveal': `.blur-reveal {
   animation: blur-reveal 3s ease-in-out infinite;
 }
 @keyframes blur-reveal {
   0%,100% { filter: blur(8px); opacity: 0.3; }
-  40%,70%  { filter: blur(0);   opacity: 1;   }
+  40%,70% { filter: blur(0);   opacity: 1;   }
 }`,
 
-'wave-letters': `/* Wave Letters */
-/* Wrap each letter in a <span> */
+'wave-letters': `/* প্রতিটি অক্ষর <span>-এ রাখুন */
 .wave-letters span {
   display: inline-block;
   animation: wave-letter 1.5s ease-in-out infinite;
 }
 .wave-letters span:nth-child(2) { animation-delay: 0.1s; }
-/* ... increment 0.1s per letter */
 @keyframes wave-letter {
   0%,100% { transform: translateY(0) rotate(0deg); }
-  25%      { transform: translateY(-8px) rotate(-3deg); }
-  75%      { transform: translateY(4px) rotate(3deg); }
+  25%     { transform: translateY(-8px) rotate(-3deg); }
+  75%     { transform: translateY(4px) rotate(3deg); }
 }`,
 
-'floating-orb': `/* Floating Orb */
-.orb {
-  width: 48px; height: 48px;
-  border-radius: 50%;
+'floating-orb': `.orb {
+  width: 48px; height: 48px; border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #f0c96e, #c9a84c);
   box-shadow: 0 0 20px rgba(201,168,76,0.5);
   animation: float-orb 3s ease-in-out infinite;
 }
 @keyframes float-orb {
   0%,100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-18px) scale(1.06); }
+  50%     { transform: translateY(-18px) scale(1.06); }
 }`,
 
-'infinite-rotate': `/* Infinite Rotate */
-.icon {
+'infinite-rotate': `.icon {
   animation: inf-rotate 3s linear infinite;
 }
-@keyframes inf-rotate {
-  to { transform: rotate(360deg); }
-}`,
+@keyframes inf-rotate { to { transform: rotate(360deg); } }`,
 
-'morphing-blob': `/* Morphing Blob */
-.blob {
+'morphing-blob': `.blob {
   animation: morph 6s ease-in-out infinite;
 }
 @keyframes morph {
   0%,100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-  25%      { border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%; }
-  50%      { border-radius: 50% 50% 30% 70% / 60% 40% 70% 30%; }
-  75%      { border-radius: 30% 70% 60% 40% / 50% 30% 50% 60%; }
+  25%     { border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%; }
+  50%     { border-radius: 50% 50% 30% 70% / 60% 40% 70% 30%; }
+  75%     { border-radius: 30% 70% 60% 40% / 50% 30% 50% 60%; }
 }`,
 
-'wave-bar': `/* Wave Bar */
-/* Use 7 <span> elements */
+'wave-bar': `/* ৭টি <span> ব্যবহার করুন */
 .wave-bars { display: flex; gap: 4px; align-items: flex-end; }
 .wave-bars span {
   width: 7px; border-radius: 3px 3px 0 0;
@@ -1499,26 +2061,74 @@ const CSS_SNIPPETS = {
 .wave-bars span:nth-child(1){ height:10px; animation-delay:0s; }
 .wave-bars span:nth-child(2){ height:20px; animation-delay:0.15s; }
 .wave-bars span:nth-child(3){ height:36px; animation-delay:0.3s; }
-/* ... set heights & delays per bar */
 @keyframes wave-bar {
   0%,100% { transform: scaleY(0.5); opacity: 0.5; }
-  50%      { transform: scaleY(1.5); opacity: 1; }
+  50%     { transform: scaleY(1.5); opacity: 1; }
 }`,
 
-'heartbeat': `/* Heartbeat Line */
-/* Use a scrolling SVG polyline */
-.hb-line {
-  animation: hb-move 2s linear infinite;
-}
+'heartbeat': `.hb-line { animation: hb-move 2s linear infinite; }
 @keyframes hb-move {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-/* SVG polyline points pattern:
-   0,22 20,22 30,6 40,38 50,10 60,34 70,22 90,22
-   (repeat the pattern twice for seamless loop) */`
-
+/* SVG points pattern (দুইবার repeat করুন):
+   0,22 20,22 30,6 40,38 50,10 60,34 70,22 90,22 */`
 };
+
+// ══════════════════════════════════════════════
+// MODAL FUNCTIONS
+// ══════════════════════════════════════════════
+let currentCSSKey = '';
+
+function openModal(key) {
+  const data = ANIM_DATA[key];
+  if (!data) return;
+  currentCSSKey = data.cssKey;
+
+  document.getElementById('modalIcon').textContent = data.icon;
+  document.getElementById('modalEnName').textContent = data.enName;
+  document.getElementById('modalBnName').textContent = data.bnName;
+  document.getElementById('modalCategory').textContent = data.category;
+  document.getElementById('modalExplanation').textContent = data.explanation;
+  document.getElementById('modalMeaning').textContent = data.meaning;
+
+  const usesEl = document.getElementById('modalUses');
+  usesEl.innerHTML = data.uses.map(u => `<div class="modal-use-tag">${u}</div>`).join('');
+
+  const chipsEl = document.getElementById('modalChips');
+  chipsEl.innerHTML = data.chips.map(c => `<span class="modal-meaning-chip">${c}</span>`).join('');
+
+  const btn = document.getElementById('modalCopyBtn');
+  btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> CSS Code কপি করো`;
+  btn.classList.remove('copied-state');
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function modalCopyCSS() {
+  const code = CSS_SNIPPETS[currentCSSKey];
+  if (!code) return;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('modalCopyBtn');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> কপি হয়েছে!`;
+    btn.classList.add('copied-state');
+    setTimeout(() => {
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> CSS Code কপি করো`;
+      btn.classList.remove('copied-state');
+    }, 2000);
+    showToast();
+  });
+}
 
 function copyCSS(btn, key) {
   const code = CSS_SNIPPETS[key];
@@ -1527,10 +2137,7 @@ function copyCSS(btn, key) {
     const prev = btn.innerHTML;
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
     btn.classList.add('copied');
-    setTimeout(() => {
-      btn.innerHTML = prev;
-      btn.classList.remove('copied');
-    }, 1800);
+    setTimeout(() => { btn.innerHTML = prev; btn.classList.remove('copied'); }, 1800);
     showToast();
   });
 }
@@ -1541,11 +2148,14 @@ function showToast() {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-// Register service worker for offline support / installability
+// Keyboard close
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// PWA Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch((err) => {
-      console.warn('Service worker registration failed:', err);
+    navigator.serviceWorker.register('sw.js').catch(err => {
+      console.warn('SW registration failed:', err);
     });
   });
 }
